@@ -277,6 +277,11 @@
                     <input type="text" id="gerencia" name="gerencia" required>
                 </div>
 
+                <div class="form-group">
+                    <label for="persona_gerencia">Persona de la Gerencia</label>
+                    <input type="text" id="persona_gerencia" name="persona_gerencia" required>
+                </div>
+
                 <div class="date-time-group">
                     <div class="form-group">
                         <label for="fecha_actividad">Fecha de actividad</label>
@@ -345,6 +350,20 @@
                         <option value="si">Sí</option>
                         <option value="no">No</option>
                     </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="requiere_material_pop">Requiere material POP</label>
+                    <select id="requiere_material_pop" name="requiere_material_pop" required>
+                        <option value="">Seleccione una opción</option>
+                        <option value="si">Sí</option>
+                        <option value="no">No</option>
+                    </select>
+                </div>
+
+                <div class="form-group" id="material_pop_detalles_container" style="display: none;">
+                    <label for="material_pop_detalles">Detalles del material POP requerido</label>
+                    <textarea id="material_pop_detalles" name="material_pop_detalles"></textarea>
                 </div>
 
                 <div class="form-group">
@@ -424,6 +443,21 @@
         document.addEventListener('DOMContentLoaded', function() {
             const ningunaCheckbox = document.getElementById('apoyo_logistico_ninguna');
             const otrosCheckboxes = document.querySelectorAll('input[name="apoyo_logistico[]"]:not(#apoyo_logistico_ninguna)');
+            const requiereMaterialPop = document.getElementById('requiere_material_pop');
+            const materialPopDetallesContainer = document.getElementById('material_pop_detalles_container');
+            const materialPopDetalles = document.getElementById('material_pop_detalles');
+
+            // Manejar la visibilidad del campo de detalles del material POP
+            requiereMaterialPop.addEventListener('change', function() {
+                if (this.value === 'si') {
+                    materialPopDetallesContainer.style.display = 'block';
+                    materialPopDetalles.required = true;
+                } else {
+                    materialPopDetallesContainer.style.display = 'none';
+                    materialPopDetalles.required = false;
+                    materialPopDetalles.value = '';
+                }
+            });
 
             // Función para actualizar el estado de los checkboxes
             function actualizarCheckboxes() {

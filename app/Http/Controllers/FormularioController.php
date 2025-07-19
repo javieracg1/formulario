@@ -68,6 +68,7 @@ class FormularioController extends Controller
             // Validación de los datos del formulario
             $request->validate([
                 'gerencia' => 'required|string|max:255',
+                'persona_gerencia' => 'required|string|max:255',
                 'fecha_actividad' => 'required|date',
                 'hora_actividad' => 'required',
                 'estado' => 'required|string|max:255',
@@ -80,6 +81,8 @@ class FormularioController extends Controller
                 'cantidad_personas' => 'required|integer|min:0',
                 'requiere_cobertura' => 'required|in:si,no',
                 'requiere_protocolar' => 'required|in:si,no',
+                'requiere_material_pop' => 'required|in:si,no',
+                'material_pop_detalles' => 'required_if:requiere_material_pop,si|nullable|string',
                 'apoyo_logistico' => 'nullable|array',
                 'otro_elemento' => 'nullable|string',
             ]);

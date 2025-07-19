@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('formularios', function (Blueprint $table) {
             $table->id();
             $table->string('gerencia');
+            $table->string('persona_gerencia');
             $table->date('fecha_actividad');
             $table->string('hora_actividad');
             $table->string('estado');
@@ -26,6 +27,8 @@ return new class extends Migration
             $table->integer('cantidad_personas');
             $table->string('requiere_cobertura');
             $table->string('requiere_protocolar');
+            $table->string('requiere_material_pop');
+            $table->string('material_pop_detalles')->nullable();
             $table->string('apoyo_logistico');
             $table->string('otro_elemento')->nullable();
             $table->boolean('atendido')->default(false);

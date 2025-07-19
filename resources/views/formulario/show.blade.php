@@ -23,14 +23,19 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
             border-bottom: 2px solid #f4f4f4;
         }
         .header h1 {
             margin: 0;
             color: #333;
             font-size: 24px;
+        }
+        .header-buttons {
+            display: flex;
+            gap: 10px;
+            align-items: center;
         }
         .btn {
             padding: 10px 20px;
@@ -45,36 +50,42 @@
             background-color: #007bff;
             color: white;
         }
+        .btn-success {
+            background-color: rgb(17, 157, 17);
+            color:white;
+        }
         .btn:hover {
             opacity: 0.9;
         }
         .detail-section {
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
         .detail-section h2 {
             color: #007bff;
-            font-size: 18px;
-            margin-bottom: 15px;
-            padding-bottom: 8px;
+            font-size: 16px;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
             border-bottom: 1px solid #eee;
         }
         .detail-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
+            gap: 15px;
         }
         .detail-item {
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
         .detail-item label {
             display: block;
             font-weight: bold;
             color: #666;
-            margin-bottom: 5px;
+            margin-bottom: 3px;
+            font-size: 13px;
         }
         .detail-item p {
             margin: 0;
             color: #333;
+            font-size: 13px;
         }
         .full-width {
             grid-column: 1 / -1;
@@ -82,30 +93,28 @@
         .tag-container {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 5px;
+            gap: 8px;
+            margin-top: 3px;
         }
         .tag {
             background-color: #e9ecef;
-            padding: 5px 10px;
-            border-radius: 15px;
-            font-size: 14px;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 12px;
             color: #495057;
         }
         .switch {
             position: relative;
             display: inline-block;
-            width: 60px;
-            height: 34px;
-            margin-left: 10px;
+            width: 50px;
+            height: 28px;
+            margin-left: 8px;
         }
-
         .switch input {
             opacity: 0;
             width: 0;
             height: 0;
         }
-
         .slider {
             position: absolute;
             cursor: pointer;
@@ -115,50 +124,113 @@
             bottom: 0;
             background-color: #ccc;
             transition: .4s;
-            border-radius: 34px;
+            border-radius: 28px;
         }
-
         .slider:before {
             position: absolute;
             content: "";
-            height: 26px;
-            width: 26px;
+            height: 20px;
+            width: 20px;
             left: 4px;
             bottom: 4px;
             background-color: white;
             transition: .4s;
             border-radius: 50%;
         }
-
         input:checked + .slider {
             background-color: #28a745;
         }
-
         input:checked + .slider:before {
-            transform: translateX(26px);
+            transform: translateX(22px);
         }
-
         .estado-actividad {
             display: flex;
             align-items: center;
-            margin-top: 20px;
-            padding: 15px;
+            margin-top: 15px;
+            padding: 10px;
             background-color: #f8f9fa;
-            border-radius: 8px;
+            border-radius: 6px;
+            margin-bottom: 15px;
         }
-
         .estado-actividad label {
-            margin-right: 10px;
+            margin-right: 8px;
             font-weight: bold;
             color: #333;
+            font-size: 13px;
+        }
+
+        @media print {
+            body {
+                margin: 0;
+                padding: 0;
+                background: white;
+            }
+            .container {
+                max-width: 100%;
+                margin: 0;
+                padding: 15px;
+                box-shadow: none;
+                border-radius: 0;
+            }
+            .header-buttons {
+                display: none;
+            }
+            .header {
+                margin-bottom: 15px;
+                padding-bottom: 10px;
+            }
+            .header h1 {
+                font-size: 22px;
+            }
+            .detail-section {
+                margin-bottom: 15px;
+                page-break-inside: avoid;
+            }
+            .detail-section h2 {
+                font-size: 17px;
+                margin-bottom: 8px;
+                padding-bottom: 4px;
+            }
+            .detail-grid {
+                gap: 10px;
+            }
+            .detail-item {
+                margin-bottom: 8px;
+            }
+            .detail-item label {
+                font-size: 14px;
+                margin-bottom: 2px;
+            }
+            .detail-item p {
+                font-size: 14px;
+            }
+            .estado-actividad {
+                margin-top: 10px;
+                padding: 8px;
+                margin-bottom: 10px;
+            }
+            .estado-actividad label {
+                font-size: 14px;
+            }
+            .switch {
+                width: 40px;
+                height: 24px;
+            }
+            .slider:before {
+                height: 18px;
+                width: 18px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>Detalles del Formulario</h1>
-            <a href="{{ route('dashboard') }}" class="btn btn-primary">Volver al Dashboard</a>
+            <h1>Detalles de la Actividad</h1>
+            <div class="header-buttons">
+                <button class="btn btn-success" onclick="window.print()">Imprimir</button>
+                <a href="{{ route('dashboard') }}" class="btn btn-primary">Volver al Dashboard</a>
+            </div>
         </div>
 
         <div class="estado-actividad">
@@ -178,6 +250,10 @@
                 <div class="detail-item">
                     <label>Gerencia</label>
                     <p>{{ $formulario->gerencia }}</p>
+                </div>
+                <div class="detail-item">
+                    <label>Persona de la Gerencia</label>
+                    <p>{{ $formulario->persona_gerencia }}</p>
                 </div>
                 <div class="detail-item">
                     <label>Fecha y Hora de la Actividad</label>
@@ -252,6 +328,16 @@
                     <label>Requiere Personal Protocolar</label>
                     <p>{{ ucfirst($formulario->requiere_protocolar) }}</p>
                 </div>
+                <div class="detail-item">
+                    <label>Requiere Material POP</label>
+                    <p>{{ ucfirst($formulario->requiere_material_pop) }}</p>
+                </div>
+                @if($formulario->requiere_material_pop === 'si' && $formulario->material_pop_detalles)
+                <div class="detail-item full-width">
+                    <label>Detalles del Material POP</label>
+                    <p>{{ $formulario->material_pop_detalles }}</p>
+                </div>
+                @endif
                 <div class="detail-item full-width">
                     <label>Apoyo Logístico</label>
                     <div class="tag-container">

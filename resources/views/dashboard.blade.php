@@ -36,7 +36,7 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            padding-top: 40px;
+            padding-top: 30px;
         }
 
         .container {
@@ -50,10 +50,10 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
-            margin-top: 35px; /* Añadido margen superior para separación del logo */
+            margin-bottom: 20px;
+            margin-top: 35px;
             background-color: white;
-            padding: 20px;
+            padding: 15px;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
@@ -81,6 +81,10 @@
             background-color: #007bff;
             color: white;
         }
+        .btn-success {
+            background-color: rgb(17, 157, 17);
+            color:white;
+        }
         .btn-danger {
             background-color: #dc3545;
             color: white;
@@ -91,44 +95,80 @@
         .formularios-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
+            gap: 15px;
+            margin-top: 15px;
         }
         .formulario-card {
             background: white;
             border-radius: 8px;
-            padding: 20px;
+            padding: 15px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             transition: transform 0.2s;
+            display: flex;
+            flex-direction: column;
+            position: relative;
         }
         .formulario-card:hover {
             transform: translateY(-5px);
         }
+
+        /* Estilos para la vista de lista */
+        .formularios-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .formularios-list .formulario-card {
+            width: 100%;
+            margin-bottom: 0;
+            box-sizing: border-box;
+        }
         .formulario-header {
             border-bottom: 1px solid #eee;
-            padding-bottom: 10px;
-            margin-bottom: 15px;
+            padding-bottom: 8px;
+            margin-bottom: 10px;
         }
         .formulario-header h3 {
             margin: 0;
             color: #333;
-            font-size: 1.2em;
-            margin-bottom: 5px;
+            font-size: 1.1em;
+            margin-bottom: 3px;
         }
         .formulario-header small {
             color: #666;
             font-size: 0.9em;
         }
+        .formulario-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin: 8px 0;
+        }
+
+        .formulario-content .info-container {
+            flex: 1;
+            display: flex;
+            gap: 20px;
+        }
+
         .formulario-content p {
-            margin: 5px 0;
+            margin: 3px 0;
             color: #666;
             font-size: 0.95em;
+            white-space: nowrap;
         }
+
         .formulario-footer {
-            margin-top: 15px;
-            padding-top: 15px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 15px;
+            margin-top: 10px;
+            padding-top: 10px;
             border-top: 1px solid #eee;
-            text-align: right;
         }
         .empty-state {
             text-align: center;
@@ -434,12 +474,49 @@
         .estado-actividad {
             display: flex;
             align-items: center;
+            gap: 8px;
         }
 
-        .estado-actividad span {
-            font-size: 0.9em;
-            color: #666;
-            margin-left: 5px;
+        .estado-texto {
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .estado-texto.atendida {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .estado-texto.pendiente {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .formulario-card {
+            position: relative;
+        }
+
+        .estado-print {
+            display: none;
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .estado-print.atendida {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .estado-print.pendiente {
+            background-color: #fff3cd;
+            color: #856404;
         }
 
         @keyframes notification-fade-in {
@@ -454,17 +531,42 @@
         .no-actividad {
             background-color: #f8f9fa;
             border: 1px solid #e9ecef;
+            padding: 10px;
         }
 
         .no-actividad-text {
             color: #6c757d;
             font-style: italic;
             text-align: center;
-            margin: 10px 0;
+            margin: 8px 0;
         }
 
         .no-actividad .formulario-header {
             border-bottom-color: #e9ecef;
+            padding-bottom: 6px;
+            margin-bottom: 6px;
+        }
+
+        .acciones {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-ver-detalles {
+            padding: 8px 15px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: none;
+            background-color: #007bff;
+            color: white;
+            transition: background-color 0.2s;
+        }
+
+        .btn-ver-detalles:hover {
+            background-color: #0056b3;
         }
 
         @media (max-width: 768px) {
@@ -480,11 +582,187 @@
                 transform: translateX(-50%);
             }
         }
+
+        @media print {
+            body {
+                background-color: white;
+                margin: 0;
+                padding: 0;
+                font-family: Arial, sans-serif;
+                width: 100%;
+            }
+
+            .header,
+            .notifications-icon,
+            .btn-primary,
+            .pagination,
+            .switch,
+            .notifications-panel,
+            .notifications-overlay,
+            .btn-ver-detalles,
+            .estado-actividad {
+                display: none !important;
+            }
+
+            .top-bar {
+                position: relative;
+                margin: 20px 0;
+                width: 180px;
+                padding: 0 40px;
+                box-sizing: border-box;
+            }
+
+            .top-bar img {
+                width: 180px;
+                height: auto;
+                display: block;
+            }
+
+            .main-content {
+                padding: 0;
+                width: 100%;
+            }
+
+            .container {
+                width: 100%;
+                max-width: none;
+                padding: 0;
+                margin: 0;
+            }
+
+            .titulo-imprimir {
+                text-align: center;
+                font-size: 24px;
+                margin: 10px 0 30px 0;
+                font-weight: bold;
+                width: 100%;
+            }
+
+            .formularios-list {
+                padding: 0 40px;
+                width: calc(100% - 80px);
+                margin: 0 auto;
+            }
+
+            .formulario-card {
+                page-break-inside: avoid;
+                break-inside: avoid;
+                margin-bottom: 20px;
+                border: 2px solid #000;
+                padding: 15px 20px;
+                border-radius: 8px;
+                background-color: white;
+                box-shadow: none;
+                width: 100%;
+                box-sizing: border-box;
+            }
+
+            .formulario-header {
+                border-bottom: 1px solid #000;
+                margin-bottom: 10px;
+                padding-bottom: 8px;
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .formulario-header-content {
+                flex: 1;
+            }
+
+            .formulario-header h3 {
+                font-size: 16px;
+                margin: 0 0 3px 0;
+                color: #000;
+            }
+
+            .formulario-header small {
+                font-size: 13px;
+                color: #333;
+                display: block;
+            }
+
+            .estado-actividad {
+                display: block !important;
+                font-size: 13px;
+                color: #333;
+                text-align: right;
+                margin-left: 15px;
+            }
+
+            .estado-actividad span {
+                padding: 3px 8px;
+                border-radius: 4px;
+                background-color: #e9ecef;
+                font-weight: bold;
+            }
+
+            .estado-actividad span.atendida {
+                background-color: #d4edda;
+                color: #155724;
+            }
+
+            .estado-actividad span.pendiente {
+                background-color: #fff3cd;
+                color: #856404;
+            }
+
+            .formulario-content {
+                display: block;
+                width: 100%;
+            }
+
+            .info-container {
+                display: flex;
+                justify-content: flex-start;
+                gap: 30px;
+                margin: 8px 0;
+                width: 100%;
+            }
+
+            .info-container p {
+                margin: 0;
+                font-size: 13px;
+                color: #000;
+                white-space: normal;
+            }
+
+            .info-container p strong {
+                font-weight: bold;
+                margin-right: 5px;
+            }
+
+            .no-actividad {
+                background-color: #f8f9fa;
+                border: 2px solid #000;
+                width: 100%;
+                box-sizing: border-box;
+            }
+
+            .no-actividad-text {
+                text-align: center;
+                font-style: italic;
+                color: #666;
+                margin: 10px 0;
+                font-size: 13px;
+            }
+
+            @page {
+                margin: 0;
+                size: A4;
+            }
+
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="top-bar">
-        <img src="{{ asset('images/logo.png') }}" alt="Logo">
+        <img src="{{ asset('images/logo.png') }}" alt="Logo" class="logo-impresion">
     </div>
     <div class="main-content">
         <div class="container">
@@ -495,6 +773,7 @@
                         <i class="fas fa-bell"></i>
                         <span class="notifications-count" id="notificationsCount" style="display: none;"></span>
                     </div>
+                    <button onclick="imprimir()" class="btn btn-success">Imprimir Lista</button>
                     <a href="{{ route('formulario.question') }}" class="btn btn-primary">Nuevo Formulario</a>
                     <form action="{{ route('logout') }}" method="POST" style="display: inline;">
                         @csrf
@@ -503,20 +782,24 @@
                 </div>
             </div>
 
-            <div class="notifications-overlay" id="notificationsOverlay" onclick="closeNotifications()"></div>
-            <div class="notifications-panel" id="notificationsPanel">
-                <div class="notifications-header">
-                    <div class="title">
-                        <i class="fas fa-bell"></i>
-                        <span>Notificaciones</span>
+            <div class="notificaciones">
+                <div class="notifications-overlay" id="notificationsOverlay" onclick="closeNotifications()"></div>
+                <div class="notifications-panel" id="notificationsPanel">
+                    <div class="notifications-header">
+                        <div class="title">
+                            <i class="fas fa-bell"></i>
+                            <span>Notificaciones</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <span class="clear-all" onclick="markAllAsRead()">Marcar todas como leídas</span>
+                            <i class="fas fa-times close-panel" onclick="closeNotifications()"></i>
+                        </div>
                     </div>
-                    <div style="display: flex; align-items: center; gap: 15px;">
-                        <span class="clear-all" onclick="markAllAsRead()">Marcar todas como leídas</span>
-                        <i class="fas fa-times close-panel" onclick="closeNotifications()"></i>
-                    </div>
+                    <div id="notificationsContainer"></div>
                 </div>
-                <div id="notificationsContainer"></div>
             </div>
+
+            <h1 class="titulo-imprimir">Actividades pautadas</h1>
 
             @if($combinedItems->isEmpty())
                 <div class="empty-state">
@@ -524,7 +807,7 @@
                     <p>Los registros que se creen aparecerán aquí.</p>
                 </div>
             @else
-                <div class="formularios-grid">
+                <div class="formularios-list" id="printableArea">
                     @foreach($combinedItems as $item)
                         @if(isset($item->nombre_gerencia))
                             {{-- Es una actividad no realizada --}}
@@ -540,23 +823,28 @@
                         @else
                             {{-- Es un formulario --}}
                             <div class="formulario-card">
+                                <span class="estado-print {{ $item->atendido ? 'atendida' : 'pendiente' }}">
+                                    {{ $item->atendido ? 'Atendida' : 'Pendiente' }}
+                                </span>
                                 <div class="formulario-header">
-                                    <h3>{{ $item->gerencia }}</h3>
-                                    <small>
-                                        @if($item->fecha_actividad)
-                                            {{ $item->fecha_actividad->format('d/m/Y') }}
-                                        @else
-                                            Fecha no disponible
-                                        @endif
-                                        - {{ $item->hora_actividad }}
-                                    </small>
+                                    <div class="formulario-header-content">
+                                        <h3>{{ $item->gerencia }}</h3>
+                                        <small>
+                                            @if($item->fecha_actividad)
+                                                {{ $item->fecha_actividad->format('d/m/Y') }}
+                                            @else
+                                                Fecha no disponible
+                                            @endif
+                                            - {{ $item->hora_actividad }}
+                                        </small>
+                                    </div>
                                 </div>
                                 <div class="formulario-content">
-                                    <p><strong>Lugar:</strong> {{ $item->lugar }}</p>
-                                    <p><strong>Responsable:</strong> {{ $item->responsable }}</p>
-                                    <p><strong>Participantes:</strong> {{ $item->cantidad_personas }}</p>
-                                </div>
-                                <div class="formulario-footer">
+                                    <div class="info-container">
+                                        <p><strong>Lugar:</strong> {{ $item->lugar }}</p>
+                                        <p><strong>Responsable:</strong> {{ $item->responsable }}</p>
+                                        <p><strong>Participantes:</strong> {{ $item->cantidad_personas }}</p>
+                                    </div>
                                     <div class="estado-actividad">
                                         <label class="switch">
                                             <input type="checkbox" class="switch-atendido"
@@ -564,11 +852,11 @@
                                                    {{ $item->atendido ? 'checked' : '' }}>
                                             <span class="slider"></span>
                                         </label>
-                                        <span class="estado-texto">
+                                        <span class="estado-texto {{ $item->atendido ? 'atendida' : 'pendiente' }}">
                                             {{ $item->atendido ? 'Atendida' : 'Pendiente' }}
                                         </span>
+                                        <a href="{{ route('formulario.show', $item->id) }}" class="btn btn-primary btn-ver-detalles">Ver Detalles</a>
                                     </div>
-                                    <a href="{{ route('formulario.show', $item->id) }}" class="btn btn-primary">Ver Detalles</a>
                                 </div>
                             </div>
                         @endif
@@ -770,7 +1058,13 @@
             switchEl.addEventListener('change', function() {
                 const formId = this.dataset.id;
                 const switchElement = this;
-                const estadoTexto = this.closest('.estado-actividad').querySelector('.estado-texto');
+                const formularioCard = this.closest('.formulario-card');
+                const estadoTexto = formularioCard.querySelector('.estado-texto');
+                const estadoPrint = formularioCard.querySelector('.estado-print');
+
+                // Actualizar visualmente antes de la petición
+                const nuevoEstado = this.checked;
+                actualizarEstadoVisual(estadoTexto, estadoPrint, nuevoEstado);
 
                 fetch(`/formularios/${formId}/toggle-atendido`, {
                     method: 'POST',
@@ -781,16 +1075,45 @@
                 })
                 .then(response => response.json())
                 .then(data => {
-                    if (data.success) {
-                        estadoTexto.textContent = data.atendido ? 'Atendida' : 'Pendiente';
+                    if (!data.success) {
+                        // Si hay error, revertir los cambios visuales
+                        actualizarEstadoVisual(estadoTexto, estadoPrint, !nuevoEstado);
+                        switchElement.checked = !nuevoEstado;
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    switchElement.checked = !switchElement.checked; // Revertir el switch si hay error
+                    // En caso de error, revertir los cambios visuales
+                    actualizarEstadoVisual(estadoTexto, estadoPrint, !nuevoEstado);
+                    switchElement.checked = !nuevoEstado;
                 });
             });
         });
+
+        function actualizarEstadoVisual(estadoTexto, estadoPrint, atendido) {
+            const nuevoTexto = atendido ? 'Atendida' : 'Pendiente';
+
+            // Actualizar texto
+            estadoTexto.textContent = nuevoTexto;
+            if (estadoPrint) estadoPrint.textContent = nuevoTexto;
+
+            // Actualizar clases
+            if (atendido) {
+                estadoTexto.classList.remove('pendiente');
+                estadoTexto.classList.add('atendida');
+                if (estadoPrint) {
+                    estadoPrint.classList.remove('pendiente');
+                    estadoPrint.classList.add('atendida');
+                }
+            } else {
+                estadoTexto.classList.remove('atendida');
+                estadoTexto.classList.add('pendiente');
+                if (estadoPrint) {
+                    estadoPrint.classList.remove('atendida');
+                    estadoPrint.classList.add('pendiente');
+                }
+            }
+        }
 
         // Cerrar notificaciones al hacer clic fuera o con la tecla Escape
         document.addEventListener('keydown', function(e) {
@@ -798,6 +1121,94 @@
                 closeNotifications();
             }
         });
+
+        function imprimir(){
+            window.print();
+        }
+
+        /* function printList() {
+            const printableArea = document.getElementById('printableArea');
+            if (!printableArea) {
+                console.error('Elemento con ID "printableArea" no encontrado.');
+                return;
+            }
+
+            const clonedContent = printableArea.cloneNode(true);
+
+            // Eliminar elementos interactivos y no deseados para la impresión
+            clonedContent.querySelectorAll('.switch, .btn-primary, .btn-danger, .notifications-icon, .pagination').forEach(el => el.remove());
+            clonedContent.querySelectorAll('.formulario-footer .estado-actividad').forEach(el => el.remove());
+
+            // Crear una nueva ventana para la impresión
+            const printWindow = window.open('', '_blank');
+            printWindow.document.open();
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html lang="es">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>Lista de Formularios</title>
+                    <style>
+                        body {
+                            font-family: Arial, sans-serif;
+                            margin: 20px;
+                        }
+                        .formulario-card {
+                            border: 1px solid #ccc;
+                            border-radius: 8px;
+                            padding: 15px;
+                            margin-bottom: 10px;
+                            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                        }
+                        .formulario-header {
+                            border-bottom: 1px solid #eee;
+                            padding-bottom: 10px;
+                            margin-bottom: 10px;
+                        }
+                        .formulario-header h3 {
+                            margin: 0;
+                            font-size: 1.1em;
+                        }
+                        .formulario-header small {
+                            color: #666;
+                            font-size: 0.85em;
+                        }
+                        .formulario-content p {
+                            margin: 5px 0;
+                            font-size: 0.9em;
+                        }
+                        .no-actividad {
+                            background-color: #f8f9fa;
+                            border: 1px solid #e9ecef;
+                        }
+                        .no-actividad-text {
+                            color: #6c757d;
+                            font-style: italic;
+                            text-align: center;
+                            margin: 10px 0;
+                        }
+                        @media print {
+                            body {
+                                margin: 0;
+                            }
+                            .formulario-card {
+                                page-break-inside: avoid;
+                            }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <h1>Lista de Formularios de Gestión Comunicacional</h1>
+                    ${clonedContent.innerHTML}
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+            printWindow.focus();
+            printWindow.print();
+            printWindow.close();
+        } */
     </script>
 
     @if(session('status'))

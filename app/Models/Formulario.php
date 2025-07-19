@@ -9,6 +9,7 @@ class Formulario extends Model
 {
     protected $fillable = [
         'gerencia',
+        'persona_gerencia',
         'fecha_actividad',
         'hora_actividad',
         'estado',
@@ -21,6 +22,8 @@ class Formulario extends Model
         'cantidad_personas',
         'requiere_cobertura',
         'requiere_protocolar',
+        'requiere_material_pop',
+        'material_pop_detalles',
         'apoyo_logistico',
         'otro_elemento',
         'atendido'
