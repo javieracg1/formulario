@@ -252,7 +252,7 @@
                     <p>{{ $formulario->gerencia }}</p>
                 </div>
                 <div class="detail-item">
-                    <label>Persona de la Gerencia</label>
+                    <label>Formulario llenado por</label>
                     <p>{{ $formulario->persona_gerencia }}</p>
                 </div>
                 <div class="detail-item">

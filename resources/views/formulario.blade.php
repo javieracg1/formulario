@@ -278,7 +278,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="persona_gerencia">Persona de la Gerencia</label>
+                    <label for="persona_gerencia">Nombre de quien llena el formulario</label>
                     <input type="text" id="persona_gerencia" name="persona_gerencia" required>
                 </div>
 
