@@ -267,7 +267,7 @@
             padding: 0.4rem;
             font-size: 0.75rem;
             color: var(--text-color);
-            min-height: 32px;
+            min-height: 12px;
             display: flex;
             align-items: center;
         }
@@ -345,10 +345,10 @@
 <body>
     <div class="action-buttons no-print">
         <button onclick="window.print()" class="btn btn-print">
-            🖨️ Imprimir
+            Imprimir
         </button>
         <a href="{{ route('dashboard') }}" class="btn btn-back">
-            ← Volver
+            Volver
         </a>
     </div>
 
@@ -403,19 +403,21 @@
                         </div>
                     </div>
                     <div style="padding: 8px; display: flex; flex-direction: column; gap: 6px;">
-                        <div style="display: flex; align-items: center; gap: 6px;">
-                            <div style="flex: 2;">
-                                <label style="font-size: 0.6rem; font-weight: bold; margin-bottom: 1px; display: block; color: #666;">DESDE:</label>
-                                <div class="data-display {{ empty($formulario->hora_desde) ? 'empty' : '' }}" style="border: none; background: transparent; padding: 1px;">
-                                    {{ $formulario->hora_desde ? \Carbon\Carbon::parse($formulario->hora_desde)->format('H:i') : '--:--' }}
-                                </div>
-                                <label style="font-size: 0.6rem; font-weight: bold; margin-bottom: 1px; display: block; color: #666;">HASTA:</label>
-                                <div class="data-display {{ empty($formulario->hora_desde) ? 'empty' : '' }}" style="border: none; background: transparent; padding: 1px;">
-                                    {{ $formulario->hora_hasta ? \Carbon\Carbon::parse($formulario->hora_hasta)->format('H:i') : '--:--' }}
-                                </div>
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <div style="flex: 1;">
+                            <label style="font-size: 0.6rem; font-weight: bold; margin-bottom: 1px; display: block; color: #666;">DESDE:</label>
+                            <div class="data-display {{ empty($formulario->hora_desde) ? 'empty' : '' }}" style="border: none; background: transparent; padding: 1px;">
+                                {{ $formulario->hora_desde ? \Carbon\Carbon::parse($formulario->hora_desde)->format('H:i') : '--:--' }}
+                            </div>
+                        </div>
+                        <div style="flex: 1;">
+                            <label style="font-size: 0.6rem; font-weight: bold; margin-bottom: 1px; display: block; color: #666;">HASTA:</label>
+                            <div class="data-display {{ empty($formulario->hora_hasta) ? 'empty' : '' }}" style="border: none; background: transparent; padding: 1px;">
+                                {{ $formulario->hora_hasta ? \Carbon\Carbon::parse($formulario->hora_hasta)->format('H:i') : '--:--' }}
                             </div>
                         </div>
                     </div>
+                </div>
                 </div>
                 <div style="border-top: 1px solid #000; padding: 8px;">
                     <div style="margin-bottom: 10px;">

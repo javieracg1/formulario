@@ -467,34 +467,30 @@
                         <div style="padding: 10px;">
                             <select name="tecnologia_1" style="width: 100%; margin-bottom: 5px; padding: 4px; border: 1px solid #ccc; border-radius: 4px;">
                                 <option value="">Elija un elemento</option>
-                                <option value="MARKETING INSTITUCIONAL">MARKETING INSTITUCIONAL</option>
-                                <option value="MARKETING EDUCATIVO">MARKETING EDUCATIVO</option>
-                                <option value="MATERIAL P.O.P">MATERIAL P.O.P</option>
-                                <option value="PERSONAL PROTOCOLAR">PERSONAL PROTOCOLAR</option>
+                                <option value="SONIDO">SONIDO</option>
+                                <option value="PROYECCIÓN">PROYECCIÓN</option>
+                                <option value="INTERNET">INTERNET</option>
                                 <option value="NINGUNO">NINGUNO</option>
                             </select>
                             <select name="tecnologia_2" style="width: 100%; margin-bottom: 5px; padding: 4px; border: 1px solid #ccc; border-radius: 4px;">
                                 <option value="">Elija un elemento</option>
-                                <option value="MARKETING INSTITUCIONAL">MARKETING INSTITUCIONAL</option>
-                                <option value="MARKETING EDUCATIVO">MARKETING EDUCATIVO</option>
-                                <option value="MATERIAL P.O.P">MATERIAL P.O.P</option>
-                                <option value="PERSONAL PROTOCOLAR">PERSONAL PROTOCOLAR</option>
+                                <option value="SONIDO">SONIDO</option>
+                                <option value="PROYECCIÓN">PROYECCIÓN</option>
+                                <option value="INTERNET">INTERNET</option>
                                 <option value="NINGUNO">NINGUNO</option>
                             </select>
                             <select name="tecnologia_3" style="width: 100%; margin-bottom: 5px; padding: 4px; border: 1px solid #ccc; border-radius: 4px;">
                                 <option value="">Elija un elemento</option>
-                                <option value="MARKETING INSTITUCIONAL">MARKETING INSTITUCIONAL</option>
-                                <option value="MARKETING EDUCATIVO">MARKETING EDUCATIVO</option>
-                                <option value="MATERIAL P.O.P">MATERIAL P.O.P</option>
-                                <option value="PERSONAL PROTOCOLAR">PERSONAL PROTOCOLAR</option>
+                                <option value="SONIDO">SONIDO</option>
+                                <option value="PROYECCIÓN">PROYECCIÓN</option>
+                                <option value="INTERNET">INTERNET</option>
                                 <option value="NINGUNO">NINGUNO</option>
                             </select>
                             <select name="tecnologia_4" style="width: 100%; padding: 4px; border: 1px solid #ccc; border-radius: 4px;">
                                 <option value="">Elija un elemento</option>
-                                <option value="MARKETING INSTITUCIONAL">MARKETING INSTITUCIONAL</option>
-                                <option value="MARKETING EDUCATIVO">MARKETING EDUCATIVO</option>
-                                <option value="MATERIAL P.O.P">MATERIAL P.O.P</option>
-                                <option value="PERSONAL PROTOCOLAR">PERSONAL PROTOCOLAR</option>
+                                <option value="SONIDO">SONIDO</option>
+                                <option value="PROYECCIÓN">PROYECCIÓN</option>
+                                <option value="INTERNET">INTERNET</option>
                                 <option value="NINGUNO">NINGUNO</option>
                     </select>
                         </div>
@@ -579,7 +575,108 @@
     @endif
 
     <script>
+        // Variables para control de reintentos
+        let intentos = 0;
+        const maxIntentos = 3;
+        const tiempoEntreIntentos = 2000; // 2 segundos
+        let controller = null;
+        let timeoutId = null;
+        
+        // Función para manejar errores
+        function manejarError(mensaje) {
+            console.error('Error:', mensaje);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: mensaje || 'Ha ocurrido un error al procesar el formulario',
+                confirmButtonColor: '#dc3545',
+                confirmButtonText: 'Entendido'
+            });
+        }
+        
+        // Función para intentar enviar el formulario
+        function intentarEnvio() {
+            const formulario = document.getElementById('formularioActividades');
+            const formData = new FormData(formulario);
+            const actionUrl = formulario.getAttribute('action');
+            const formMethod = formulario.getAttribute('method') || 'POST';
+            
+            // Cancelar solicitud anterior si existe
+            if (controller) {
+                controller.abort();
+            }
+            
+            // Crear nuevo controlador para esta solicitud
+            controller = new AbortController();
+            
+            // Establecer timeout para la solicitud
+            if (timeoutId) {
+                clearTimeout(timeoutId);
+            }
+            
+            timeoutId = setTimeout(() => {
+                controller.abort();
+                if (intentos < maxIntentos) {
+                    intentos++;
+                    console.log(`Reintento ${intentos} de ${maxIntentos}`);
+                    intentarEnvio();
+                } else {
+                    manejarError('Tiempo de espera agotado. Por favor intente nuevamente más tarde.');
+                }
+            }, 30000); // 30 segundos de timeout
+            
+            fetch(actionUrl, {
+                method: formMethod,
+                body: formData,
+                signal: controller.signal,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => {
+                clearTimeout(timeoutId);
+                if (!response.ok) {
+                    throw new Error(`Error de servidor: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: '¡Éxito!',
+                        text: data.message || 'Formulario enviado correctamente',
+                        confirmButtonColor: '#007bff',
+                        allowOutsideClick: false
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = data.redirect || '/';
+                        }
+                    });
+                } else {
+                    manejarError(data.message || 'Error al procesar el formulario');
+                }
+            })
+            .catch(error => {
+                clearTimeout(timeoutId);
+                if (error.name === 'AbortError') {
+                    console.log('Solicitud abortada');
+                    return; // No mostrar error si fue un abort controlado
+                }
+                
+                if (intentos < maxIntentos) {
+                    intentos++;
+                    console.log(`Reintento ${intentos} de ${maxIntentos} debido a: ${error.message}`);
+                    setTimeout(intentarEnvio, tiempoEntreIntentos);
+                } else {
+                    manejarError('Error de conexión. Por favor intente nuevamente más tarde.');
+                }
+            });
+        }
+        
         document.getElementById('formularioActividades').addEventListener('submit', function(e) {
+            e.preventDefault(); // Prevenir el envío tradicional del formulario
+            
             // Debug: Verificar datos del formulario antes del envío
             const formData = new FormData(this);
             console.log('=== DATOS DEL FORMULARIO ===');
@@ -609,7 +706,6 @@
             
             if (camposFaltantes.length > 0) {
                 console.error('Campos requeridos faltantes:', camposFaltantes);
-                e.preventDefault();
                 Swal.fire({
                     icon: 'error',
                     title: 'Campos requeridos',
@@ -621,7 +717,6 @@
 
             // Prevenir envío múltiple
             if (this.submitted) {
-                e.preventDefault();
                 return;
             }
             this.submitted = true;
@@ -637,6 +732,10 @@
                     Swal.showLoading();
                 }
             });
+            
+            // Iniciar el proceso de envío
+            intentos = 0;
+            intentarEnvio();
         });
 
         // Funcionalidad de elementos específicos del formulario

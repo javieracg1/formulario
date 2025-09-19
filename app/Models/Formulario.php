@@ -40,7 +40,8 @@ class Formulario extends Model
         'atendido',
         'institucion_responsable_1',
         'cantidad_participantes_1',
-        'grado_participantes_1'
+        'grado_participantes_1',
+        'notas_adicionales'
     ];
 
     protected $casts = [

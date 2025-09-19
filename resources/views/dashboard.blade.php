@@ -995,44 +995,29 @@
             // Verificar nuevas notificaciones cada 30 segundos
             setInterval(fetchNotifications, 30000);
 
-            // Switches de atendido
-            const switches = document.querySelectorAll('.switch-atendido');
-            switches.forEach(switchEl => {
+            // Manejar cambios en los switches de atendido
+            document.querySelectorAll('.switch-atendido').forEach(switchEl => {
                 switchEl.addEventListener('change', function() {
-                    const formularioId = this.dataset.id;
-                    const isChecked = this.checked;
+                    const formId = this.dataset.id;
+                    const switchElement = this;
                     const estadoTexto = this.closest('.estado-actividad').querySelector('.estado-texto');
 
-                    fetch(`/formulario/${formularioId}/toggle-atendido`, {
+                    fetch(`/formularios/${formId}/toggle-atendido`, {
                         method: 'POST',
                         headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
                             'Content-Type': 'application/json',
-                            'Accept': 'application/json'
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
                         }
                     })
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
-                            estadoTexto.textContent = isChecked ? 'Atendida' : 'Pendiente';
-                            Swal.fire({
-                                title: 'Estado Actualizado',
-                                text: `La actividad ha sido marcada como ${isChecked ? 'atendida' : 'pendiente'}`,
-                                icon: 'success',
-                                timer: 2000,
-                                showConfirmButton: false
-                            });
+                            estadoTexto.textContent = data.atendido ? 'Atendida' : 'Pendiente';
                         }
                     })
                     .catch(error => {
                         console.error('Error:', error);
-                        this.checked = !isChecked; // Revertir el cambio
-                        estadoTexto.textContent = !isChecked ? 'Atendida' : 'Pendiente';
-                        Swal.fire({
-                            title: 'Error',
-                            text: 'No se pudo actualizar el estado',
-                            icon: 'error'
-                        });
+                        switchElement.checked = !switchElement.checked; // Revertir el switch si hay error
                     });
                 });
             });

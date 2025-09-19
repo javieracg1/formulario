@@ -65,7 +65,6 @@ class FormularioController extends Controller
     public function storeForm(Request $request)
     {
         try {
-            
             // Validación de los datos del formulario
             $request->validate([
                 'unidad_solicitante' => 'required|string|max:255',
@@ -93,13 +92,14 @@ class FormularioController extends Controller
                 'cargo_responsable' => 'nullable|string|max:255',
                 'telefono_responsable' => 'nullable|string|max:255',
                 'email_responsable' => 'nullable|string|max:255',
-                            'fechaRegistro' => 'nullable|date_format:Y-m-d\TH:i',
-            'elaborado_nombre' => 'nullable|string|max:255',
-            'aprobado_nombre' => 'nullable|string|max:255',
-            'autorizado_nombre' => 'nullable|string|max:255',
-            'institucion_responsable_1' => 'nullable|string|max:255',
-            'cantidad_participantes_1' => 'nullable|integer|min:0',
-            'grado_participantes_1' => 'nullable|string|max:255',
+                'fechaRegistro' => 'nullable|date_format:Y-m-d\TH:i',
+                'elaborado_nombre' => 'nullable|string|max:255',
+                'aprobado_nombre' => 'nullable|string|max:255',
+                'autorizado_nombre' => 'nullable|string|max:255',
+                'institucion_responsable_1' => 'nullable|string|max:255',
+                'cantidad_participantes_1' => 'nullable|integer|min:0',
+                'grado_participantes_1' => 'nullable|string|max:255',
+                'notas_adicionales' => 'nullable|string|max:500'
             ]);
 
             // Preparar los datos para guardar
@@ -117,30 +117,56 @@ class FormularioController extends Controller
                 'message' => "Nuevo formulario registrado por {$formulario->unidad_solicitante} para el evento '{$formulario->nombre_evento}' en fecha {$formulario->fecha_evento}",
             ]);
 
-            // Redireccionar con mensaje de éxito
-            return redirect()
-                ->route('formulario.question')
-                ->with('success', 'El registro del formulario se ha efectuado correctamente.');
+            // Preparar respuesta según el tipo de solicitud
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'El registro del formulario se ha efectuado correctamente.',
+                    'redirect' => route('formulario.question')
+                ]);
+            } else {
+                // Redireccionar con mensaje de éxito para solicitudes tradicionales
+                return redirect()
+                    ->route('formulario.question')
+                    ->with('success', 'El registro del formulario se ha efectuado correctamente.');
+            }
 
         } catch (\Illuminate\Validation\ValidationException $e) {
             // Error de validación
             \Log::error('Error de validación:', ['errors' => $e->errors()]);
-            return redirect()
-                ->back()
-                ->withErrors($e->validator)
-                ->withInput();
+            
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Error de validación',
+                    'errors' => $e->errors()
+                ], 422);
+            } else {
+                return redirect()
+                    ->back()
+                    ->withErrors($e->validator)
+                    ->withInput();
+            }
         } catch (\Exception $e) {
-            // En caso de error, redireccionar con mensaje de error
+            // En caso de error, registrar y responder adecuadamente
             \Log::error('Error al procesar formulario:', [
                 'message' => $e->getMessage(),
                 'file' => $e->getFile(),
                 'line' => $e->getLine(),
                 'trace' => $e->getTraceAsString()
             ]);
-            return redirect()
-                ->back()
-                ->with('error', 'Hubo un error al procesar el formulario: ' . $e->getMessage())
-                ->withInput();
+            
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Hubo un error al procesar el formulario: ' . $e->getMessage()
+                ], 500);
+            } else {
+                return redirect()
+                    ->back()
+                    ->with('error', 'Hubo un error al procesar el formulario: ' . $e->getMessage())
+                    ->withInput();
+            }
         }
     }
 
