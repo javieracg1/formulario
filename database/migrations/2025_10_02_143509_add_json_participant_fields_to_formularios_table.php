@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('formularios', function (Blueprint $table) {
-            $table->string('institucion_responsable_1')->nullable();
-            $table->integer('cantidad_participantes_1')->nullable();
-            $table->string('grado_participantes_1')->nullable();
+            $table->json('instituciones_participantes')->nullable()->after('notas_adicionales');
+            $table->json('responsables_participantes')->nullable()->after('instituciones_participantes');
+            $table->json('cantidades_participantes')->nullable()->after('responsables_participantes');
         });
     }
 
@@ -24,7 +24,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('formularios', function (Blueprint $table) {
-            $table->dropColumn(['institucion_responsable_1', 'cantidad_participantes_1', 'grado_participantes_1']);
+            $table->dropColumn(['instituciones_participantes', 'responsables_participantes', 'cantidades_participantes']);
         });
     }
 };

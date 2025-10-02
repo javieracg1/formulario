@@ -7,6 +7,7 @@ use App\Models\ActividadSemanal;
 use App\Models\Formulario;
 use App\Models\Notification;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class FormularioController extends Controller
 {
@@ -95,20 +96,48 @@ class FormularioController extends Controller
                 'fechaRegistro' => 'nullable|date_format:Y-m-d\TH:i',
                 'elaborado_nombre' => 'nullable|string|max:255',
                 'aprobado_nombre' => 'nullable|string|max:255',
-                'autorizado_nombre' => 'nullable|string|max:255',
-                'institucion_responsable_1' => 'nullable|string|max:255',
-                'cantidad_participantes_1' => 'nullable|integer|min:0',
-                'grado_participantes_1' => 'nullable|string|max:255',
+                'autorizado_nombre' => 'nullable|string|max:255', // Ya no es strtoupper
+                'instituciones_participantes' => 'nullable|array',
+                'instituciones_participantes.*' => 'nullable|string|max:255',
+                'responsables_participantes' => 'nullable|array',
+                'responsables_participantes.*' => 'nullable|string|max:255',
+                'cantidades_participantes' => 'nullable|array',
+                'cantidades_participantes.*' => 'nullable|integer|min:0',
                 'notas_adicionales' => 'nullable|string|max:500'
             ]);
 
+            // Procesar los campos dinámicos de participantes
+            $instituciones = $request->input('instituciones_participantes', []);
+            $responsables = $request->input('responsables_participantes', []);
+            $cantidades = $request->input('cantidades_participantes', []);
+
+            // Filtrar entradas vacías y asegurar que los arrays tengan la misma longitud
+            $participantesData = [];
+            $maxLength = max(count($instituciones), count($responsables), count($cantidades));
+
+            for ($i = 0; $i < $maxLength; $i++) {
+                $institucion = $instituciones[$i] ?? null;
+                $responsable = $responsables[$i] ?? null;
+                $cantidad = $cantidades[$i] ?? null;
+
+                if (!empty($institucion) || !empty($responsable) || !empty($cantidad)) {
+                    $participantesData['instituciones_participantes'][] = $institucion;
+                    $participantesData['responsables_participantes'][] = $responsable;
+                    $participantesData['cantidades_participantes'][] = $cantidad;
+                }
+            }
+
+            // Preparar los datos para guardar
+            $data = $request->except(['instituciones_participantes', 'responsables_participantes', 'cantidades_participantes']);
+            $data = array_merge($data, $participantesData);
+
             // Preparar los datos para guardar
             $data = $request->all();
-            \Log::info('Datos preparados para guardar:', $data);
+            Log::info('Datos preparados para guardar:', $data);
 
             // Crear el registro
             $formulario = Formulario::create($data);
-            \Log::info('Formulario creado con ID:', ['id' => $formulario->id]);
+            Log::info('Formulario creado con ID:', ['id' => $formulario->id]);
 
             // Crear notificación
             Notification::create([
@@ -133,8 +162,8 @@ class FormularioController extends Controller
 
         } catch (\Illuminate\Validation\ValidationException $e) {
             // Error de validación
-            \Log::error('Error de validación:', ['errors' => $e->errors()]);
-            
+            Log::error('Error de validación:', ['errors' => $e->errors()]);
+
             if ($request->ajax() || $request->wantsJson()) {
                 return response()->json([
                     'success' => false,
@@ -149,13 +178,13 @@ class FormularioController extends Controller
             }
         } catch (\Exception $e) {
             // En caso de error, registrar y responder adecuadamente
-            \Log::error('Error al procesar formulario:', [
+            Log::error('Error al procesar formulario:', [
                 'message' => $e->getMessage(),
                 'file' => $e->getFile(),
                 'line' => $e->getLine(),
                 'trace' => $e->getTraceAsString()
             ]);
-            
+
             if ($request->ajax() || $request->wantsJson()) {
                 return response()->json([
                     'success' => false,
@@ -178,7 +207,7 @@ class FormularioController extends Controller
     public function dashboard()
     {
         $viewType = request()->get('view', 'card'); // 'card' o 'list'
-        
+
         $formularios = Formulario::select('id', 'unidad_solicitante', 'nombre_evento', 'fecha_evento', 'hora_desde', 'hora_hasta', 'objetivo_evento', 'atendido', 'created_at', 'tipo_evento', 'institucion_responsable')
                                 ->get();
 
@@ -217,12 +246,12 @@ class FormularioController extends Controller
     {
         $formulario = Formulario::findOrFail($id);
         $viewType = request()->get('view', 'card'); // 'card' o 'list'
-        
+
         if ($viewType === 'list') {
             $formularios = Formulario::orderBy('fecha_actividad', 'desc')->get();
             return view('formulario.show-list', compact('formularios', 'formulario'));
         }
-        
+
         return view('formulario.show', compact('formulario'));
     }
 

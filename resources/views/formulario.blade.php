@@ -274,7 +274,7 @@
                     <input type="datetime-local" id="fechaRegistro" name="fechaRegistro" readonly style="font-size: 0.7rem; text-align: center; border: none; background: transparent; width: 180px;">
                 </div>
             </div>
-            
+
             <!-- Título principal -->
             <div style="text-align: center; margin-bottom: 2rem;">
                 <h1 style="font-size: 1.2rem; font-weight: bold; margin: 0; padding: 10px; border: 2px solid #000;">CONTROL DE PAUTA COMUNICACIONAL</h1>
@@ -390,24 +390,29 @@
                 </div>
 
                                 <!-- INSTITUCIONES O ENTES PARTICIPANTES -->
-                <div style="border: 1px solid #000; margin-bottom: 10px;">
-                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; border-bottom: 1px solid #000;">
-                        <div style="padding: 5px; border-right: 1px solid #000; font-weight: bold; font-size: 0.8rem; text-align: center;">INSTITUCIONES O ENTES PARTICIPANTES</div>
-                        <div style="padding: 5px; border-right: 1px solid #000; font-weight: bold; font-size: 0.8rem; text-align: center;">RESPONSABLE</div>
-                        <div style="padding: 5px; font-weight: bold; font-size: 0.8rem; text-align: center;">CANTIDAD DE PARTICIPANTES</div>
-                    </div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr;">
-                        <div style="padding: 10px; border-right: 1px solid #000;">
-                            <input type="text" name="institucion_responsable_1" placeholder="Ingrese el nombre de la institución o ente participante" style="width: 100%; border: none; outline: none; font-size: 0.8rem;">
-                        </div>
-                        <div style="padding: 10px; border-right: 1px solid #000;">
-                            <input type="text" name="cantidad_participantes_1" placeholder="Ingrese el nombre del responsable" min="0" style="width: 100%; border: none; outline: none; font-size: 0.8rem; text-align: center;">
-                        </div>
-                        <div style="padding: 10px;">
-                            <input type="number" name="grado_participantes_1" placeholder="Ingrese la cantidad de participantes" style="width: 100%; border: none; outline: none; font-size: 0.8rem; text-align: center;">
-                        </div>
-                    </div>
-                </div>
+                                <div style="border: 1px solid #000; margin-bottom: 10px;">
+                                    <div style="background-color: #f0f0f0; padding: 5px; border-bottom: 1px solid #000; font-weight: bold; font-size: 0.9rem; text-align: center;">INSTITUCIONES O ENTES PARTICIPANTES</div>
+                                    <div id="participantes-container">
+                                        <!-- Fila inicial de participantes -->
+                                        <div class="participante-row" style="display: grid; grid-template-columns: 1fr 1fr 1fr auto; border-bottom: 1px solid #eee; padding: 10px 0;">
+                                            <div style="padding: 0 10px; border-right: 1px solid #eee;">
+                                                <input type="text" name="instituciones_participantes[]" placeholder="Institución o Ente" style="width: 100%; border: none; outline: none; font-size: 0.8rem;">
+                                            </div>
+                                            <div style="padding: 0 10px; border-right: 1px solid #eee;">
+                                                <input type="text" name="responsables_participantes[]" placeholder="Responsable" style="width: 100%; border: none; outline: none; font-size: 0.8rem;">
+                                            </div>
+                                            <div style="padding: 0 10px;">
+                                                <input type="number" name="cantidades_participantes[]" placeholder="Cantidad" min="0" style="width: 100%; border: none; outline: none; font-size: 0.8rem; text-align: center;">
+                                            </div>
+                                            <div style="display: flex; align-items: center; padding: 0 10px;">
+                                                <button type="button" class="remove-participante" style="background-color: #dc3545; color: white; border: none; border-radius: 4px; padding: 5px 8px; cursor: pointer; font-size: 0.7rem; width: auto; margin-top: 0;">-</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style="padding: 10px; text-align: center; border-top: 1px solid #000;">
+                                        <button type="button" id="add-participante" style="background-color: #28a745; color: white; border: none; border-radius: 4px; padding: 8px 12px; cursor: pointer; font-size: 0.8rem; width: auto; margin-top: 0;">Añadir Participante</button>
+                                    </div>
+                                </div>
 
                 <!-- REQUERIMIENTO PARA EL EVENTO -->
                 <div style="border: 1px solid #000; margin-bottom: 10px;">
@@ -581,7 +586,7 @@
         const tiempoEntreIntentos = 2000; // 2 segundos
         let controller = null;
         let timeoutId = null;
-        
+
         // Función para manejar errores
         function manejarError(mensaje) {
             console.error('Error:', mensaje);
@@ -593,27 +598,27 @@
                 confirmButtonText: 'Entendido'
             });
         }
-        
+
         // Función para intentar enviar el formulario
         function intentarEnvio() {
             const formulario = document.getElementById('formularioActividades');
             const formData = new FormData(formulario);
             const actionUrl = formulario.getAttribute('action');
             const formMethod = formulario.getAttribute('method') || 'POST';
-            
+
             // Cancelar solicitud anterior si existe
             if (controller) {
                 controller.abort();
             }
-            
+
             // Crear nuevo controlador para esta solicitud
             controller = new AbortController();
-            
+
             // Establecer timeout para la solicitud
             if (timeoutId) {
                 clearTimeout(timeoutId);
             }
-            
+
             timeoutId = setTimeout(() => {
                 controller.abort();
                 if (intentos < maxIntentos) {
@@ -624,7 +629,7 @@
                     manejarError('Tiempo de espera agotado. Por favor intente nuevamente más tarde.');
                 }
             }, 30000); // 30 segundos de timeout
-            
+
             fetch(actionUrl, {
                 method: formMethod,
                 body: formData,
@@ -663,7 +668,7 @@
                     console.log('Solicitud abortada');
                     return; // No mostrar error si fue un abort controlado
                 }
-                
+
                 if (intentos < maxIntentos) {
                     intentos++;
                     console.log(`Reintento ${intentos} de ${maxIntentos} debido a: ${error.message}`);
@@ -673,21 +678,21 @@
                 }
             });
         }
-        
+
         document.getElementById('formularioActividades').addEventListener('submit', function(e) {
             e.preventDefault(); // Prevenir el envío tradicional del formulario
-            
+
             // Debug: Verificar datos del formulario antes del envío
             const formData = new FormData(this);
             console.log('=== DATOS DEL FORMULARIO ===');
             for (let [key, value] of formData.entries()) {
                 console.log(key + ': ' + value);
             }
-            
+
             // Verificar campos requeridos específicos
             const camposRequeridos = [
                 'unidad_solicitante',
-                'nombre_evento', 
+                'nombre_evento',
                 'fecha_evento',
                 'hora_desde',
                 'hora_hasta',
@@ -695,7 +700,7 @@
                 'tipo_evento',
                 'institucion_responsable'
             ];
-            
+
             let camposFaltantes = [];
             camposRequeridos.forEach(campo => {
                 const valor = formData.get(campo);
@@ -703,7 +708,7 @@
                     camposFaltantes.push(campo);
                 }
             });
-            
+
             if (camposFaltantes.length > 0) {
                 console.error('Campos requeridos faltantes:', camposFaltantes);
                 Swal.fire({
@@ -732,7 +737,7 @@
                     Swal.showLoading();
                 }
             });
-            
+
             // Iniciar el proceso de envío
             intentos = 0;
             intentarEnvio();
@@ -767,7 +772,7 @@
             tipoEvento.addEventListener('change', function() {
                 const otroTipoEvento = document.getElementById('otroTipoEvento');
                 const inputOtro = document.querySelector('input[name="tipo_evento_otro"]');
-                
+
                 if (otroTipoEvento && inputOtro) {
                     if (this.value === 'otro') {
                         otroTipoEvento.style.display = 'block';
@@ -787,7 +792,7 @@
             servicioCartering.addEventListener('change', function() {
                 const otroCatering = document.getElementById('otroCatering');
                 const inputOtroCatering = document.querySelector('input[name="servicio_catering_otro"]');
-                
+
                 if (otroCatering && inputOtroCatering) {
                     if (this.value === 'OTRO') {
                         otroCatering.style.display = 'block';
@@ -801,6 +806,47 @@
             });
         }
 
+        // Lógica para añadir y remover participantes dinámicamente
+        const addParticipanteButton = document.getElementById('add-participante');
+        const participantesContainer = document.getElementById('participantes-container');
+
+        if (addParticipanteButton && participantesContainer) {
+            addParticipanteButton.addEventListener('click', function() {
+                const newRow = document.createElement('div');
+                newRow.classList.add('participante-row');
+                newRow.style.cssText = 'display: grid; grid-template-columns: 1fr 1fr 1fr auto; border-bottom: 1px solid #eee; padding: 10px 0;';
+                newRow.innerHTML = `
+                    <div style="padding: 0 10px; border-right: 1px solid #eee;">
+                        <input type="text" name="instituciones_participantes[]" placeholder="Institución o Ente" style="width: 100%; border: none; outline: none; font-size: 0.8rem;">
+                    </div>
+                    <div style="padding: 0 10px; border-right: 1px solid #eee;">
+                        <input type="text" name="responsables_participantes[]" placeholder="Responsable" style="width: 100%; border: none; outline: none; font-size: 0.8rem;">
+                    </div>
+                    <div style="padding: 0 10px;">
+                        <input type="number" name="cantidades_participantes[]" placeholder="Cantidad" min="0" style="width: 100%; border: none; outline: none; font-size: 0.8rem; text-align: center;">
+                    </div>
+                    <div style="display: flex; align-items: center; padding: 0 10px;">
+                        <button type="button" class="remove-participante" style="background-color: #dc3545; color: white; border: none; border-radius: 4px; padding: 5px 8px; cursor: pointer; font-size: 0.7rem; width: auto; margin-top: 0;">-</button>
+                    </div>
+                `;
+                participantesContainer.appendChild(newRow);
+            });
+
+            participantesContainer.addEventListener('click', function(e) {
+                if (e.target.classList.contains('remove-participante')) {
+                    if (participantesContainer.querySelectorAll('.participante-row').length > 1) {
+                        e.target.closest('.participante-row').remove();
+                    } else {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Atención',
+                            text: 'Debe haber al menos una fila de participantes.',
+                            confirmButtonColor: '#ffc107'
+                        });
+                    }
+                }
+            });
+        }
     </script>
 </body>
 </html>

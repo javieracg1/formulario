@@ -38,9 +38,9 @@ class Formulario extends Model
         'autorizado_nombre',
         'fechaRegistro',
         'atendido',
-        'institucion_responsable_1',
-        'cantidad_participantes_1',
-        'grado_participantes_1',
+        'instituciones_participantes', // Nuevo campo para array JSON
+        'responsables_participantes',  // Nuevo campo para array JSON
+        'cantidades_participantes',    // Nuevo campo para array JSON
         'notas_adicionales'
     ];
 
@@ -50,6 +50,9 @@ class Formulario extends Model
         'hora_hasta' => 'datetime:H:i',
         'fechaRegistro' => 'datetime',
         'atendido' => 'boolean',
+        'instituciones_participantes' => 'array', // Cast como array para JSON
+        'responsables_participantes' => 'array',   // Cast como array para JSON
+        'cantidades_participantes' => 'array',     // Cast como array para JSON
         'created_at' => 'datetime',
         'updated_at' => 'datetime'
     ];
@@ -181,16 +184,37 @@ class Formulario extends Model
 
     public function setAutorizadoNombreAttribute($value)
     {
-        $this->attributes['autorizado_nombre'] = $value ? strtoupper($value) : null;
+        $this->attributes['autorizado_nombre'] = $value; // No convertir a mayúsculas para el select
     }
 
-    public function setInstitucionResponsable1Attribute($value)
+    // Mutadores para campos JSON
+    public function setInstitucionesParticipantesAttribute($value)
     {
-        $this->attributes['institucion_responsable_1'] = $value ? strtoupper($value) : null;
+        $this->attributes['instituciones_participantes'] = json_encode($value);
     }
 
-    public function setGradoParticipantes1Attribute($value)
+    public function getInstitucionesParticipantesAttribute($value)
     {
-        $this->attributes['grado_participantes_1'] = $value ? strtoupper($value) : null;
+        return json_decode($value, true);
+    }
+
+    public function setResponsablesParticipantesAttribute($value)
+    {
+        $this->attributes['responsables_participantes'] = json_encode($value);
+    }
+
+    public function getResponsablesParticipantesAttribute($value)
+    {
+        return json_decode($value, true);
+    }
+
+    public function setCantidadesParticipantesAttribute($value)
+    {
+        $this->attributes['cantidades_participantes'] = json_encode($value);
+    }
+
+    public function getCantidadesParticipantesAttribute($value)
+    {
+        return json_decode($value, true);
     }
 }

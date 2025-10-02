@@ -317,12 +317,12 @@
             .no-print {
                 display: none !important;
             }
-            
+
             body {
                 background: white !important;
                 font-size: 11px;
             }
-            
+
             .container {
                 max-width: none;
                 padding: 0;
@@ -330,12 +330,12 @@
                 box-shadow: none;
                 border: none;
             }
-            
+
             .main-content {
                 padding: 15px;
                 padding-top: 50px;
             }
-            
+
             .action-buttons {
                 display: none !important;
             }
@@ -355,7 +355,7 @@
     <div class="top-bar">
         <img src="{{ asset('images/logo.png') }}" alt="Logo">
     </div>
-    
+
     <div class="main-content">
         <div class="container">
             <!-- Fecha y hora de registro -->
@@ -367,7 +367,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Título principal -->
             <div style="text-align: center; margin-bottom: 1.5rem;">
                 <h1 style="font-size: 1rem; font-weight: bold; margin: 0; padding: 8px; border: 2px solid #000;">CONTROL DE PAUTA COMUNICACIONAL</h1>
@@ -475,27 +475,43 @@
             <div style="border: 1px solid #000; margin-bottom: 8px;">
                 <div style="background-color: #f0f0f0; padding: 4px; border-bottom: 1px solid #000; font-weight: bold; font-size: 0.75rem; text-align: center;">INSTITUCIONES O ENTES PARTICIPANTES</div>
                 <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; border-bottom: 1px solid #000;">
+                    <div style="padding: 4px; border-right: 1px solid #000; font-weight: bold; font-size: 0.65rem; text-align: center;">INSTITUCIÓN O ENTE</div>
                     <div style="padding: 4px; border-right: 1px solid #000; font-weight: bold; font-size: 0.65rem; text-align: center;">RESPONSABLE</div>
-                    <div style="padding: 4px; border-right: 1px solid #000; font-weight: bold; font-size: 0.65rem; text-align: center;">CANTIDAD DE PARTICIPANTES</div>
-                    <div style="padding: 4px; font-weight: bold; font-size: 0.65rem; text-align: center;">GRADO</div>
+                    <div style="padding: 4px; font-weight: bold; font-size: 0.65rem; text-align: center;">CANTIDAD</div>
                 </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr;">
-                    <div style="padding: 8px; border-right: 1px solid #000;">
-                        <div class="data-display {{ empty($formulario->institucion_responsable_1) ? 'empty' : '' }}">
-                            {{ $formulario->institucion_responsable_1 ?? 'IFEs' }}
+                @if($formulario->instituciones_participantes && count($formulario->instituciones_participantes) > 0)
+                    @foreach(array_map(null, $formulario->instituciones_participantes, $formulario->responsables_participantes, $formulario->cantidades_participantes) as $participante)
+                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr;">
+                            <div style="padding: 8px; border-right: 1px solid #000;">
+                                <div class="data-display {{ empty($participante[0]) ? 'empty' : '' }}">
+                                    {{ $participante[0] ?? 'No especificado' }}
+                                </div>
+                            </div>
+                            <div style="padding: 8px; border-right: 1px solid #000;">
+                                <div class="data-display {{ empty($participante[1]) ? 'empty' : '' }}">
+                                    {{ $participante[1] ?? 'No especificado' }}
+                                </div>
+                            </div>
+                            <div style="padding: 8px;">
+                                <div class="data-display {{ empty($participante[2]) ? 'empty' : '' }}">
+                                    {{ $participante[2] ?? '0' }}
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                @else
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr;">
+                        <div style="padding: 8px; border-right: 1px solid #000;">
+                            <div class="data-display empty">No especificado</div>
+                        </div>
+                        <div style="padding: 8px; border-right: 1px solid #000;">
+                            <div class="data-display empty">No especificado</div>
+                        </div>
+                        <div style="padding: 8px;">
+                            <div class="data-display empty">0</div>
                         </div>
                     </div>
-                    <div style="padding: 8px; border-right: 1px solid #000;">
-                        <div class="data-display {{ empty($formulario->cantidad_participantes_1) ? 'empty' : '' }}">
-                            {{ $formulario->cantidad_participantes_1 ?? '0' }}
-                        </div>
-                    </div>
-                    <div style="padding: 8px;">
-                        <div class="data-display {{ empty($formulario->grado_participantes_1) ? 'empty' : '' }}">
-                            {{ $formulario->grado_participantes_1 ?? '6to' }}
-                        </div>
-                    </div>
-                </div>
+                @endif
             </div>
 
             <!-- REQUERIMIENTO PARA EL EVENTO -->
@@ -583,9 +599,10 @@
                         </div>
                     </div>
                     <div style="padding: 15px;">
-                        <div class="data-display" style="border: none; border-bottom: 1px solid #000; background: transparent;">
-                            {{ $formulario->autorizado_nombre ?? 'ING. LUIS LUNAR' }}
-                        </div>
+                        <select name="autorizado_nombre" style="width: 100%; border: none; border-bottom: 1px solid #000; background: transparent; font-size: 0.75rem; padding: 0.4rem 0; min-height: 28px;">
+                            <option value="ING. LUIS LUNAR" {{ ($formulario->autorizado_nombre ?? '') == 'ING. LUIS LUNAR' ? 'selected' : '' }}>ING. LUIS LUNAR</option>
+                            <option value="LIC. GERTRUDIS INFANTE" {{ ($formulario->autorizado_nombre ?? '') == 'LIC. GERTRUDIS INFANTE' ? 'selected' : '' }}>LIC. GERTRUDIS INFANTE</option>
+                        </select>
                     </div>
                 </div>
                 <div style="display: grid; grid-template-columns: 1fr 1fr 1fr;">
