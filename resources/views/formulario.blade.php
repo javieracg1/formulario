@@ -317,13 +317,13 @@
                 <div style="border: 1px solid #000; margin-bottom: 10px;">
                     <div style="background-color: #f0f0f0; padding: 5px; border-bottom: 1px solid #000; font-weight: bold; font-size: 0.9rem; text-align: center;">DATOS DEL EVENTO</div>
                     <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; border-bottom: 1px solid #000;">
-                        <div style="padding: 5px; border-right: 1px solid #000; font-weight: bold; font-size: 0.8rem; text-align: center;">NOMBRE</div>
-                        <div style="padding: 5px; border-right: 1px solid #000; font-weight: bold; font-size: 0.8rem; text-align: center;">FECHAS</div>
+                        <div style="padding: 5px; border-right: 1px solid #000; font-weight: bold; font-size: 0.8rem; text-align: center;">DESCRIPCIÓN</div>
+                        <div style="padding: 5px; border-right: 1px solid #000; font-weight: bold; font-size: 0.8rem; text-align: center;">FECHA</div>
                         <div style="padding: 5px; font-weight: bold; font-size: 0.8rem; text-align: center;">HORAS</div>
                     </div>
                     <div style="display: grid; grid-template-columns: 1fr 1fr 1fr;">
                         <div style="padding: 15px; border-right: 1px solid #000; display: flex; align-items: center;">
-                            <input type="text" name="nombre_evento" placeholder="Nombre y Apellido" style="width: 100%; border: none; outline: none; font-size: 0.9rem;">
+                            <input type="text" name="nombre_evento" placeholder="Descripción del evento" style="width: 100%; border: none; outline: none; font-size: 0.9rem;">
                         </div>
                         <div style="padding: 15px; border-right: 1px solid #000; display: flex; align-items: center;">
                             <input type="date" name="fecha_evento" style="width: 100%; border: none; outline: none; font-size: 0.9rem;">
@@ -375,12 +375,15 @@
                     <div style="padding: 10px;">
                                             <div style="margin-bottom: 15px;">
                         <label style="font-size: 0.8rem; font-weight: bold; margin-bottom: 5px; display: block;">AMBIENTE:</label>
-                        <select name="ambiente" style="width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 4px;">
+                        <select name="ambiente" id="ambiente" style="width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 4px;">
                             <option value="">Elija un elemento</option>
                             <option value="AUDITORIO">AUDITORIO</option>
                             <option value="SALA DE USOS MÚLTIPLES">SALA DE USOS MÚLTIPLES</option>
-                            <option value="NINGUNO">NINGUNO</option>
+                            <option value="OTRO">OTRO</option>
                         </select>
+                        <div id="otroAmbiente" style="margin-top: 10px; display: none;">
+                            <input type="text" name="ambiente_otro" placeholder="Especifique el ambiente" style="width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 4px; font-size: 0.9rem;">
+                        </div>
                     </div>
                         <div style="margin-top: 15px;">
                             <label style="font-size: 0.8rem; font-weight: bold; margin-bottom: 5px; display: block;">LUGAR DEL EVENTO:</label>
@@ -419,7 +422,7 @@
                     <div style="background-color: #f0f0f0; padding: 5px; border-bottom: 1px solid #000; font-weight: bold; font-size: 0.9rem; text-align: center;">REQUERIMIENTO PARA EL EVENTO</div>
                     <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; border-bottom: 1px solid #000;">
                         <div style="padding: 5px; border-right: 1px solid #000; font-weight: bold; font-size: 0.8rem; text-align: center;">SERVICIO DE CATERING</div>
-                        <div style="padding: 5px; border-right: 1px solid #000; font-weight: bold; font-size: 0.8rem; text-align: center;">EQUIPO DE COMUNICACIONES</div>
+                        <div style="padding: 5px; border-right: 1px solid #000; font-weight: bold; font-size: 0.8rem; text-align: center;">ELEMENTO COMUNICACIONAL</div>
                         <div style="padding: 5px; font-weight: bold; font-size: 0.8rem; text-align: center;">EQUIPO DE TECNOLOGÍAS</div>
                 </div>
                     <div style="display: grid; grid-template-columns: 1fr 1fr 1fr;">
@@ -512,34 +515,44 @@
 
                 <!-- SECCIÓN DE FIRMAS -->
                 <div style="border: 1px solid #000; margin-bottom: 10px;">
-                    <div style="background-color: #f0f0f0; padding: 5px; border-bottom: 1px solid #000; font-weight: bold; font-size: 0.9rem; text-align: center;">UNIDAD SOLICITANTE</div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; border-bottom: 1px solid #000;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid #000;">
+                        <div style="background-color: #f0f0f0; padding: 5px; border-right: 1px solid #000; font-weight: bold; font-size: 0.9rem; text-align: center;">UNIDAD SOLICITANTE</div>
+                        <div style="background-color: #f0f0f0; padding: 5px; font-weight: bold; font-size: 0.9rem; text-align: center;">APROBACIÓN</div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; border-bottom: 1px solid #000;">
                         <div style="padding: 5px; border-right: 1px solid #000; font-weight: bold; font-size: 0.8rem; text-align: center;">ELABORADO POR:</div>
                         <div style="padding: 5px; border-right: 1px solid #000; font-weight: bold; font-size: 0.8rem; text-align: center;">APROBADO POR:</div>
+                        <div style="padding: 5px; border-right: 1px solid #000; font-weight: bold; font-size: 0.8rem; text-align: center;">AUTORIZADO POR:</div>
                         <div style="padding: 5px; font-weight: bold; font-size: 0.8rem; text-align: center;">AUTORIZADO POR:</div>
                     </div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; border-bottom: 1px solid #000;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; border-bottom: 1px solid #000;">
+                        <div style="padding: 5px; border-right: 1px solid #000; font-weight: bold; font-size: 0.7rem; text-align: center;">NOMBRE Y APELLIDO:</div>
                         <div style="padding: 5px; border-right: 1px solid #000; font-weight: bold; font-size: 0.7rem; text-align: center;">NOMBRE Y APELLIDO:</div>
                         <div style="padding: 5px; border-right: 1px solid #000; font-weight: bold; font-size: 0.7rem; text-align: center;">NOMBRE Y APELLIDO:</div>
                         <div style="padding: 5px; font-weight: bold; font-size: 0.7rem; text-align: center;">NOMBRE Y APELLIDO:</div>
                     </div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; border-bottom: 1px solid #000;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; border-bottom: 1px solid #000;">
                         <div style="padding: 20px; border-right: 1px solid #000;">
-                            <input type="text" name="elaborado_nombre" style="width: 100%; border: none; border-bottom: 1px solid #000;">
+                            <input type="text" name="elaborado_nombre" style="width: 100%; border: none; border-bottom: 1px solid #000; font-size: 0.7rem;">
                         </div>
                         <div style="padding: 20px; border-right: 1px solid #000;">
-                            <input type="text" name="aprobado_nombre" style="width: 100%; border: none; border-bottom: 1px solid #000;">
+                            <input type="text" name="aprobado_nombre" style="width: 100%; border: none; border-bottom: 1px solid #000; font-size: 0.7rem;">
+                        </div>
+                        <div style="padding: 20px; border-right: 1px solid #000;">
+                            <input type="text" name="autorizado_nombre" style="width: 100%; border: none; border-bottom: 1px solid #000; font-size: 0.7rem;" disabled>
                         </div>
                         <div style="padding: 20px;">
-                            <input type="text" name="autorizado_nombre" value="ING. LUIS LUNAR" style="width: 100%; border: none; border-bottom: 1px solid #000;" disabled>
+                            <input type="text" name="autorizado_nombre_2" value="PAOLA YÉPEZ-ALCALÁ" style="width: 100%; border: none; border-bottom: 1px solid #000; font-size: 0.7rem;" disabled>
                         </div>
                     </div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr;">
+                        <div style="padding: 5px; border-right: 1px solid #000; font-weight: bold; font-size: 0.7rem; text-align: center;">FIRMA Y SELLO:</div>
                         <div style="padding: 5px; border-right: 1px solid #000; font-weight: bold; font-size: 0.7rem; text-align: center;">FIRMA Y SELLO:</div>
                         <div style="padding: 5px; border-right: 1px solid #000; font-weight: bold; font-size: 0.7rem; text-align: center;">FIRMA Y SELLO:</div>
                         <div style="padding: 5px; font-weight: bold; font-size: 0.7rem; text-align: center;">FIRMA Y SELLO:</div>
                     </div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr;">
+                        <div style="padding: 40px; border-right: 1px solid #000;"></div>
                         <div style="padding: 40px; border-right: 1px solid #000;"></div>
                         <div style="padding: 40px; border-right: 1px solid #000;"></div>
                         <div style="padding: 40px;"></div>
@@ -779,6 +792,26 @@
                         inputOtro.required = true;
                     } else {
                         otroTipoEvento.style.display = 'none';
+                        inputOtro.required = false;
+                        inputOtro.value = '';
+                    }
+                    }
+                });
+            }
+
+        // Manejar la funcionalidad del desplegable "OTRO" en Ambiente
+        const ambiente = document.getElementById('ambiente');
+        if (ambiente) {
+            ambiente.addEventListener('change', function() {
+                const otroAmbiente = document.getElementById('otroAmbiente');
+                const inputOtro = document.querySelector('input[name="ambiente_otro"]');
+
+                if (otroAmbiente && inputOtro) {
+                    if (this.value === 'OTRO') {
+                        otroAmbiente.style.display = 'block';
+                        inputOtro.required = true;
+                    } else {
+                        otroAmbiente.style.display = 'none';
                         inputOtro.required = false;
                         inputOtro.value = '';
                     }

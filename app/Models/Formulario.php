@@ -36,6 +36,7 @@ class Formulario extends Model
         'elaborado_nombre',
         'aprobado_nombre',
         'autorizado_nombre',
+        'autorizado_nombre_2',
         'fechaRegistro',
         'atendido',
         'instituciones_participantes', // Nuevo campo para array JSON
@@ -185,6 +186,11 @@ class Formulario extends Model
     public function setAutorizadoNombreAttribute($value)
     {
         $this->attributes['autorizado_nombre'] = $value; // No convertir a mayúsculas para el select
+    }
+
+    public function setAutorizadoNombre2Attribute($value)
+    {
+        $this->attributes['autorizado_nombre_2'] = $value; // No convertir a mayúsculas para el select
     }
 
     // Mutadores para campos JSON

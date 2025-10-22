@@ -97,6 +97,7 @@ class FormularioController extends Controller
                 'elaborado_nombre' => 'nullable|string|max:255',
                 'aprobado_nombre' => 'nullable|string|max:255',
                 'autorizado_nombre' => 'nullable|string|max:255', // Ya no es strtoupper
+                'autorizado_nombre_2' => 'nullable|string|max:255',
                 'instituciones_participantes' => 'nullable|array',
                 'instituciones_participantes.*' => 'nullable|string|max:255',
                 'responsables_participantes' => 'nullable|array',
@@ -132,7 +133,8 @@ class FormularioController extends Controller
             $data = array_merge($data, $participantesData);
 
             // Preparar los datos para guardar
-            $data = $request->all();
+            // La línea $data = $request->all(); sobrescribía los datos de participantes procesados.
+            // Ahora, $data ya contiene los campos del request y los participantes procesados.
             Log::info('Datos preparados para guardar:', $data);
 
             // Crear el registro

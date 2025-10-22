@@ -432,10 +432,17 @@
                             {{ $formulario->tipo_evento ?? 'No especificado' }}
                         </div>
                     </div>
-                    @if($formulario->tipo_evento === 'otro' && $formulario->tipo_evento_otro)
+                    @if($formulario->tipo_evento === 'OTRO' && $formulario->tipo_evento_otro)
                     <div style="margin-top: 8px;">
                         <div class="data-display">
-                            <strong>Especificación:</strong> {{ $formulario->tipo_evento_otro }}
+                            {{ $formulario->tipo_evento_otro }}
+                        </div>
+                    </div>
+                    @endif
+                    @if($formulario->ambiente === 'OTRO' && $formulario->ambiente_otro)
+                    <div style="margin-top: 8px;">
+                        <div class="data-display">
+                            <strong>Especificación del Ambiente:</strong> {{ $formulario->ambiente_otro }}
                         </div>
                     </div>
                     @endif
@@ -576,41 +583,53 @@
 
             <!-- SECCIÓN DE FIRMAS -->
             <div style="border: 1px solid #000; margin-bottom: 8px;">
-                <div style="background-color: #f0f0f0; padding: 4px; border-bottom: 1px solid #000; font-weight: bold; font-size: 0.75rem; text-align: center;">UNIDAD SOLICITANTE</div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; border-bottom: 1px solid #000;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid #000;">
+                    <div style="background-color: #f0f0f0; padding: 4px; border-right: 1px solid #000; font-weight: bold; font-size: 0.75rem; text-align: center;">UNIDAD SOLICITANTE</div>
+                    <div style="background-color: #f0f0f0; padding: 4px; font-weight: bold; font-size: 0.75rem; text-align: center;">APROBACIÓN</div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; border-bottom: 1px solid #000;">
                     <div style="padding: 4px; border-right: 1px solid #000; font-weight: bold; font-size: 0.65rem; text-align: center;">ELABORADO POR:</div>
                     <div style="padding: 4px; border-right: 1px solid #000; font-weight: bold; font-size: 0.65rem; text-align: center;">APROBADO POR:</div>
+                    <div style="padding: 4px; border-right: 1px solid #000; font-weight: bold; font-size: 0.65rem; text-align: center;">AUTORIZADO POR:</div>
                     <div style="padding: 4px; font-weight: bold; font-size: 0.65rem; text-align: center;">AUTORIZADO POR:</div>
                 </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; border-bottom: 1px solid #000;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; border-bottom: 1px solid #000;">
+                    <div style="padding: 4px; border-right: 1px solid #000; font-weight: bold; font-size: 0.6rem; text-align: center;">NOMBRE Y APELLIDO:</div>
                     <div style="padding: 4px; border-right: 1px solid #000; font-weight: bold; font-size: 0.6rem; text-align: center;">NOMBRE Y APELLIDO:</div>
                     <div style="padding: 4px; border-right: 1px solid #000; font-weight: bold; font-size: 0.6rem; text-align: center;">NOMBRE Y APELLIDO:</div>
                     <div style="padding: 4px; font-weight: bold; font-size: 0.6rem; text-align: center;">NOMBRE Y APELLIDO:</div>
                 </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; border-bottom: 1px solid #000;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; border-bottom: 1px solid #000;">
                     <div style="padding: 15px; border-right: 1px solid #000;">
-                        <div class="data-display {{ empty($formulario->elaborado_nombre) ? 'empty' : '' }}" style="border: none; border-bottom: 1px solid #000; background: transparent;">
+                        <div class="data-display {{ empty($formulario->elaborado_nombre) ? 'empty' : '' }}" style="border: none; border-bottom: 1px solid #000; background: transparent; font-size: 0.7rem;">
                             {{ $formulario->elaborado_nombre ?? '____________________' }}
                         </div>
                     </div>
                     <div style="padding: 15px; border-right: 1px solid #000;">
-                        <div class="data-display {{ empty($formulario->aprobado_nombre) ? 'empty' : '' }}" style="border: none; border-bottom: 1px solid #000; background: transparent;">
+                        <div class="data-display {{ empty($formulario->aprobado_nombre) ? 'empty' : '' }}" style="border: none; border-bottom: 1px solid #000; background: transparent; font-size: 0.7rem;">
                             {{ $formulario->aprobado_nombre ?? '____________________' }}
                         </div>
                     </div>
-                    <div style="padding: 15px;">
-                        <select name="autorizado_nombre" style="width: 100%; border: none; border-bottom: 1px solid #000; background: transparent; font-size: 0.75rem; padding: 0.4rem 0; min-height: 28px;">
+                    <div style="padding: 15px; border-right: 1px solid #000;">
+                        <select name="autorizado_nombre" style="width: 100%; border: none; border-bottom: 1px solid #000; background: transparent; font-size: 0.7rem; padding: 0.4rem 0; min-height: 28px;">
                             <option value="ING. LUIS LUNAR" {{ ($formulario->autorizado_nombre ?? '') == 'ING. LUIS LUNAR' ? 'selected' : '' }}>ING. LUIS LUNAR</option>
                             <option value="LIC. GERTRUDIS INFANTE" {{ ($formulario->autorizado_nombre ?? '') == 'LIC. GERTRUDIS INFANTE' ? 'selected' : '' }}>LIC. GERTRUDIS INFANTE</option>
                         </select>
                     </div>
+                    <div style="padding: 15px;">
+                        <div class="data-display {{ empty($formulario->autorizado_nombre_2) ? 'empty' : '' }}" style="border: none; border-bottom: 1px solid #000; background: transparent; font-size: 0.7rem;">
+                            {{ $formulario->autorizado_nombre_2 ?? 'PAOLA YÉPEZ-ALCALÁ' }}
+                        </div>
+                    </div>
                 </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr;">
+                    <div style="padding: 4px; border-right: 1px solid #000; font-weight: bold; font-size: 0.6rem; text-align: center;">FIRMA Y SELLO:</div>
                     <div style="padding: 4px; border-right: 1px solid #000; font-weight: bold; font-size: 0.6rem; text-align: center;">FIRMA Y SELLO:</div>
                     <div style="padding: 4px; border-right: 1px solid #000; font-weight: bold; font-size: 0.6rem; text-align: center;">FIRMA Y SELLO:</div>
                     <div style="padding: 4px; font-weight: bold; font-size: 0.6rem; text-align: center;">FIRMA Y SELLO:</div>
                 </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr;">
+                    <div style="padding: 30px; border-right: 1px solid #000;"></div>
                     <div style="padding: 30px; border-right: 1px solid #000;"></div>
                     <div style="padding: 30px; border-right: 1px solid #000;"></div>
                     <div style="padding: 30px;"></div>
