@@ -198,7 +198,7 @@
 
         textarea {
             resize: vertical;
-            min-height: 100px;
+            min-height: 10px;
         }
 
         button {
@@ -574,8 +574,8 @@
             <!-- NOTAS ADICIONALES -->
             <div style="border: 1px solid #000; margin-bottom: 15px;">
                 <div style="background-color: #f0f0f0; padding: 4px; border-bottom: 1px solid #000; font-weight: bold; font-size: 0.75rem;">NOTAS ADICIONALES:</div>
-                <div style="padding: 8px; min-height: 80px;">
-                    <div class="data-display {{ empty($formulario->notas_adicionales) ? 'empty' : '' }}" style="height: 60px; border: none; background: transparent; padding: 0;">
+                <div >
+                    <div class="data-display {{ empty($formulario->notas_adicionales) ? 'empty' : '' }}" style="border: none; background: transparent; padding: 6px; line-height: 1.2em;">
                         {{ $formulario->notas_adicionales ?? 'Sin notas adicionales' }}
                     </div>
                 </div>
@@ -590,7 +590,7 @@
                 <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; border-bottom: 1px solid #000;">
                     <div style="padding: 4px; border-right: 1px solid #000; font-weight: bold; font-size: 0.65rem; text-align: center;">ELABORADO POR:</div>
                     <div style="padding: 4px; border-right: 1px solid #000; font-weight: bold; font-size: 0.65rem; text-align: center;">APROBADO POR:</div>
-                    <div style="padding: 4px; border-right: 1px solid #000; font-weight: bold; font-size: 0.65rem; text-align: center;">AUTORIZADO POR:</div>
+                    <div style="padding: 4px; border-right: 1px solid #000; font-weight: bold; font-size: 0.65rem; text-align: center;">VERIFICADO POR:</div>
                     <div style="padding: 4px; font-weight: bold; font-size: 0.65rem; text-align: center;">AUTORIZADO POR:</div>
                 </div>
                 <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; border-bottom: 1px solid #000;">
@@ -610,16 +610,16 @@
                             {{ $formulario->aprobado_nombre ?? '____________________' }}
                         </div>
                     </div>
-                    <div style="padding: 15px; border-right: 1px solid #000;">
-                        <select name="autorizado_nombre" style="width: 100%; border: none; border-bottom: 1px solid #000; background: transparent; font-size: 0.7rem; padding: 0.4rem 0; min-height: 28px;">
-                            <option value="ING. LUIS LUNAR" {{ ($formulario->autorizado_nombre ?? '') == 'ING. LUIS LUNAR' ? 'selected' : '' }}>ING. LUIS LUNAR</option>
-                            <option value="LIC. GERTRUDIS INFANTE" {{ ($formulario->autorizado_nombre ?? '') == 'LIC. GERTRUDIS INFANTE' ? 'selected' : '' }}>LIC. GERTRUDIS INFANTE</option>
-                        </select>
-                    </div>
                     <div style="padding: 15px;">
                         <div class="data-display {{ empty($formulario->autorizado_nombre_2) ? 'empty' : '' }}" style="border: none; border-bottom: 1px solid #000; background: transparent; font-size: 0.7rem;">
                             {{ $formulario->autorizado_nombre_2 ?? 'PAOLA YÉPEZ-ALCALÁ' }}
                         </div>
+                    </div>
+                    <div style="padding: 15px; border-left: 1px solid #000;">
+                        <select name="autorizado_nombre" style="width: 100%; border: none; border-bottom: 1px solid #000; background: transparent; font-size: 0.7rem; padding: 0.4rem 0; min-height: 28px;">
+                            <option value="ING. LUIS LUNAR" {{ ($formulario->autorizado_nombre ?? '') == 'ING. LUIS LUNAR' ? 'selected' : '' }}>ING. LUIS LUNAR</option>
+                            <option value="LIC. GERTRUDIS INFANTE" {{ ($formulario->autorizado_nombre ?? '') == 'LIC. GERTRUDIS INFANTE' ? 'selected' : '' }}>LIC. GERTRUDIS INFANTE</option>
+                        </select>
                     </div>
                 </div>
                 <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr;">
