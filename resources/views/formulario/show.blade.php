@@ -617,7 +617,7 @@
                     </div>
                     <div style="padding: 15px; border-left: 1px solid #000;">
                         <select name="autorizado_nombre" style="width: 100%; border: none; border-bottom: 1px solid #000; background: transparent; font-size: 0.7rem; padding: 0.4rem 0; min-height: 28px;">
-                            <option value="ING. LUIS LUNAR" {{ ($formulario->autorizado_nombre ?? '') == 'ING. LUIS LUNAR' ? 'selected' : '' }}>ING. LUIS LUNAR</option>
+                            <option value="ING. LUIS LUNAR" {{ ($formulario->autorizado_nombre ?? '') == 'LIC. MARLYN ALVARADO' ? 'selected' : '' }}>LIC. MARLYN ALVARADO</option>
                             <option value="LIC. GERTRUDIS INFANTE" {{ ($formulario->autorizado_nombre ?? '') == 'LIC. GERTRUDIS INFANTE' ? 'selected' : '' }}>LIC. GERTRUDIS INFANTE</option>
                         </select>
                     </div>
