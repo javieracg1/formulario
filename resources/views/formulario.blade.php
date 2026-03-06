@@ -648,7 +648,8 @@
                 body: formData,
                 signal: controller.signal,
                 headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 }
             })
             .then(response => {
