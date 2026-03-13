@@ -612,7 +612,7 @@
                     </div>
                     <div style="padding: 15px;">
                         <div class="data-display {{ empty($formulario->autorizado_nombre_2) ? 'empty' : '' }}" style="border: none; border-bottom: 1px solid #000; background: transparent; font-size: 0.7rem;">
-                            {{ $formulario->autorizado_nombre_2 ?? 'LIC. CAROLINA GÓMEZ' }}
+                            {{ $formulario->autorizado_nombre_2 ?? 'LIC. LILIBETH IBARRA' }}
                         </div>
                     </div>
                     <div style="padding: 15px; border-left: 1px solid #000;">

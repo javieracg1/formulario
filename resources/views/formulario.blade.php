@@ -539,7 +539,7 @@
                             <input type="text" name="aprobado_nombre" style="width: 100%; border: none; border-bottom: 1px solid #000; font-size: 0.7rem;">
                         </div>
                         <div style="padding: 20px; border-right: 1px solid #000;">
-                            <input type="text" name="autorizado_nombre_2" value="LIC. CAROLINA GÓMEZ" style="width: 100%; border: none; border-bottom: 1px solid #000; font-size: 0.7rem;" disabled>
+                            <input type="text" name="autorizado_nombre_2" value="LIC. LILIBETH IBARRA" style="width: 100%; border: none; border-bottom: 1px solid #000; font-size: 0.7rem;" disabled>
                         </div>
                         <div style="padding: 20px;">
                             <input type="text" name="autorizado_nombre" style="width: 100%; border: none; border-bottom: 1px solid #000; font-size: 0.7rem;" disabled>
