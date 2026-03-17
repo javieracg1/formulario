@@ -8,6 +8,8 @@ use App\Models\Formulario;
 use App\Models\Notification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\Notificacion;
 
 class FormularioController extends Controller
 {
@@ -147,6 +149,9 @@ class FormularioController extends Controller
                 'gerencia' => $formulario->unidad_solicitante,
                 'message' => "Nuevo formulario registrado por {$formulario->unidad_solicitante} para el evento '{$formulario->nombre_evento}' en fecha {$formulario->fecha_evento}",
             ]);
+
+            $destinatario = "jcarrillo@fuvidit.com.ve";
+            Mail::to($destinatario)->send(new Notificacion($formulario));
 
             // Preparar respuesta según el tipo de solicitud
             if ($request->ajax() || $request->wantsJson()) {

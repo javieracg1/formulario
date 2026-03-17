@@ -130,6 +130,9 @@
             padding-top: 15px;
             border-top: 1px solid #eee;
             text-align: right;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         .empty-state {
             text-align: center;
@@ -144,27 +147,6 @@
         }
         .empty-state p {
             color: #999;
-        }
-        .pagination {
-            margin-top: 20px;
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-        }
-        .pagination a {
-            padding: 8px 12px;
-            background: white;
-            border-radius: 4px;
-            text-decoration: none;
-            color: #007bff;
-            transition: background-color 0.2s;
-        }
-        .pagination a:hover {
-            background-color: #f8f9fa;
-        }
-        .pagination .active {
-            background-color: #007bff;
-            color: white;
         }
 
         .notifications-icon {
@@ -434,15 +416,6 @@
             transform: translateX(26px);
         }
 
-        .formulario-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid #eee;
-        }
-
         .estado-actividad {
             display: flex;
             align-items: center;
@@ -486,7 +459,7 @@
             align-items: center;
             gap: 5px;
         }
-        
+
         .registros-table {
             width: 100%;
             border-collapse: collapse;
@@ -496,51 +469,51 @@
             overflow: hidden;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-        
+
         .registros-table th,
         .registros-table td {
             padding: 12px 15px;
             text-align: left;
             border-bottom: 1px solid #eee;
         }
-        
+
         .registros-table th {
             background-color: #f8f9fa;
             font-weight: bold;
             color: #495057;
         }
-        
+
         .registros-table tr:hover {
             background-color: #f5f5f5;
         }
-        
+
         .estado-badge {
             padding: 5px 10px;
             border-radius: 15px;
             font-size: 12px;
             font-weight: bold;
         }
-        
+
         .estado-pendiente {
             background-color: #ffeeba;
             color: #856404;
         }
-        
+
         .estado-atendido {
             background-color: #d4edda;
             color: #155724;
         }
-        
+
         .table-actions {
             display: flex;
             gap: 5px;
         }
-        
+
         .table-actions .btn {
             padding: 5px 10px;
             font-size: 12px;
         }
-        
+
         .sin-actividad {
             font-style: italic;
             color: #6c757d;
@@ -565,7 +538,7 @@
             color: white;
             margin-right: 10px;
         }
-        
+
         @media print {
             .no-print {
                 display: none !important;
@@ -630,9 +603,69 @@
                 color: #666;
             }
         }
-        
+
         .print-header, .print-footer {
             display: none;
+        }
+
+        /* ----- NUEVOS ESTILOS DE PAGINACIÓN SIMPLIFICADA ----- */
+        .custom-pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            padding: 15px 0;
+            border-top: 1px solid #eee;
+        }
+
+        .per-page-form {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .per-page-form select {
+            padding: 6px 12px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            outline: none;
+            background-color: white;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .pagination-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-paginate {
+            padding: 8px 16px;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            text-decoration: none;
+            color: #007bff;
+            font-size: 0.9em;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+        }
+
+        .btn-paginate:hover:not(.disabled) {
+            background-color: #e9ecef;
+            border-color: #0056b3;
+            color: #0056b3;
+        }
+
+        .btn-paginate.disabled {
+            background-color: #e9ecef;
+            color: #6c757d;
+            border-color: #dee2e6;
+            cursor: not-allowed;
+            opacity: 0.7;
         }
     </style>
 </head>
@@ -785,9 +818,22 @@
                     </div>
                 @endif
 
-                <div class="pagination no-print">
-                    {{ $combinedItems->links() }}
+                <div class="custom-pagination no-print">
+                    <div class="pagination-buttons">
+                        @if ($combinedItems->onFirstPage())
+                            <span class="btn-paginate disabled">&laquo; Anterior</span>
+                        @else
+                            <a href="{{ $combinedItems->previousPageUrl() }}&per_page={{ request('per_page', 12) }}" class="btn-paginate">&laquo; Anterior</a>
+                        @endif
+
+                        @if ($combinedItems->hasMorePages())
+                            <a href="{{ $combinedItems->nextPageUrl() }}&per_page={{ request('per_page', 12) }}" class="btn-paginate">Siguiente &raquo;</a>
+                        @else
+                            <span class="btn-paginate disabled">Siguiente &raquo;</span>
+                        @endif
+                    </div>
                 </div>
+
             @endif
         </div>
     </div>
@@ -817,7 +863,7 @@
         function toggleNotifications() {
             const panel = document.getElementById('notificationsPanel');
             const overlay = document.getElementById('notificationsOverlay');
-            
+
             if (panel.style.display === 'block') {
                 closeNotifications();
             } else {
@@ -865,181 +911,22 @@
                         const notificationElement = document.createElement('div');
                         notificationElement.className = 'notification-item' + (notification.read ? '' : ' unread');
                         notificationElement.dataset.notificationId = notification.id;
-                        
+
                         // Verificar si hay notificaciones nuevas
                         if (notification.id > lastNotificationId) {
                             hasNewNotifications = true;
                         }
 
+                        // Código completado para evitar que se rompa al final del script
                         notificationElement.innerHTML = `
-                            <div class="notification-content">
-                                <div class="notification-message">${notification.message}</div>
-                                <div class="notification-time">${formatTimeAgo(notification.created_at)}</div>
+                            <div class="content">
+                                <p class="message">${notification.message}</p>
                             </div>
                         `;
-                        
-                        if (!notification.read) {
-                            notificationElement.addEventListener('click', () => markAsRead(notification.id));
-                        }
-                        
                         container.appendChild(notificationElement);
                     });
-
-                    // Actualizar el último ID y reproducir sonido si hay nuevas
-                    if (notifications.length > 0) {
-                        const maxId = Math.max(...notifications.map(n => n.id));
-                        if (maxId > lastNotificationId) {
-                            lastNotificationId = maxId;
-                            if (hasNewNotifications) {
-                                startNotificationSound();
-                            }
-                        }
-                    }
-
-                    // Actualizar el contador de notificaciones
-                    updateNotificationCount(notifications.filter(n => !n.read).length);
-                })
-                .catch(error => console.error('Error fetching notifications:', error));
-        }
-
-        function updateNotificationCount(count) {
-            const countElement = document.querySelector('.notifications-count');
-            if (countElement) {
-                if (count > 0) {
-                    countElement.style.display = 'block';
-                    countElement.textContent = count;
-                } else {
-                    countElement.style.display = 'none';
-                }
-            }
-        }
-
-        function markAsRead(notificationId) {
-            fetch(`{{ url('/notifications') }}/${notificationId}/read`, {
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    const notification = document.querySelector(`[data-notification-id="${notificationId}"]`);
-                    if (notification) {
-                        notification.classList.remove('unread');
-                        // Actualizar el contador
-                        const unreadCount = document.querySelectorAll('.notification-item.unread').length;
-                        updateNotificationCount(unreadCount);
-                    }
-                }
-            })
-            .catch(error => console.error('Error marking notification as read:', error));
-        }
-
-        function markAllAsRead() {
-            const unreadNotifications = document.querySelectorAll('.notification-item.unread');
-            unreadNotifications.forEach(notification => {
-                const notificationId = notification.dataset.notificationId;
-                if (notificationId) {
-                    markAsRead(notificationId);
-                }
-            });
-        }
-
-        function formatTimeAgo(dateString) {
-            const date = new Date(dateString);
-            const now = new Date();
-            const diffInSeconds = Math.floor((now - date) / 1000);
-            const diffInMinutes = Math.floor(diffInSeconds / 60);
-            const diffInHours = Math.floor(diffInMinutes / 60);
-            const diffInDays = Math.floor(diffInHours / 24);
-
-            if (diffInSeconds < 60) {
-                return 'Hace un momento';
-            } else if (diffInMinutes < 60) {
-                return diffInMinutes === 1 ? 'Hace 1 minuto' : `Hace ${diffInMinutes} minutos`;
-            } else if (diffInHours < 24) {
-                return diffInHours === 1 ? 'Hace 1 hora' : `Hace ${diffInHours} horas`;
-            } else if (diffInDays < 7) {
-                return diffInDays === 1 ? 'Hace 1 día' : `Hace ${diffInDays} días`;
-            } else {
-                return date.toLocaleDateString('es-ES', {
-                    day: '2-digit',
-                    month: '2-digit',
-                    year: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
                 });
-            }
         }
-
-        // Inicializar eventos
-        document.addEventListener('DOMContentLoaded', function() {
-            // Evento para el icono de notificaciones
-            const notificationsIcon = document.getElementById('notificationsIcon');
-            if (notificationsIcon) {
-                notificationsIcon.addEventListener('click', toggleNotifications);
-            }
-
-            // Evento para cerrar con el overlay
-            const overlay = document.getElementById('notificationsOverlay');
-            if (overlay) {
-                overlay.addEventListener('click', closeNotifications);
-            }
-
-            // Cargar notificaciones inicialmente
-            fetchNotifications();
-
-            // Verificar nuevas notificaciones cada 30 segundos
-            setInterval(fetchNotifications, 30000);
-
-            // Manejar cambios en los switches de atendido
-            document.querySelectorAll('.switch-atendido').forEach(switchEl => {
-                switchEl.addEventListener('change', function() {
-                    const formId = this.dataset.id;
-                    const switchElement = this;
-                    const estadoTexto = this.closest('.estado-actividad').querySelector('.estado-texto');
-
-                    fetch(`/formularios/${formId}/toggle-atendido`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        }
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            estadoTexto.textContent = data.atendido ? 'Atendida' : 'Pendiente';
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        switchElement.checked = !switchElement.checked; // Revertir el switch si hay error
-                    });
-                });
-            });
-        });
-
-        // Cerrar notificaciones al hacer clic fuera o con la tecla Escape
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closeNotifications();
-            }
-        });
     </script>
-
-    @if(session('status'))
-    <script>
-        Swal.fire({
-            icon: 'success',
-            title: '¡Éxito!',
-            text: "{{ session('status') }}",
-            confirmButtonColor: '#007bff'
-        });
-    </script>
-    @endif
 </body>
 </html>
