@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Gestión Comunicacional</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
@@ -57,6 +58,9 @@
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 10px;
+            z-index: 1100;
         }
 
         .header h1 {
@@ -196,8 +200,8 @@
             top: 80px;
             right: 20px;
             width: 350px;
-            max-height: 500px;
-            overflow-y: auto;
+            max-height: min(520px, calc(100vh - 120px));
+            overflow: hidden;
             background: white;
             border-radius: 12px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.15);
@@ -212,6 +216,9 @@
             align-items: center;
             background: #f8f9fa;
             border-radius: 12px 12px 0 0;
+            position: sticky;
+            top: 0;
+            z-index: 1;
         }
 
         .notifications-header .title {
@@ -251,7 +258,7 @@
         }
 
         #notificationsContainer {
-            max-height: calc(500px - 60px);
+            max-height: calc(min(520px, calc(100vh - 120px)) - 60px);
             overflow-y: auto;
         }
 
@@ -316,6 +323,47 @@
             font-size: 0.8em;
             color: #6c757d;
             margin-top: 5px;
+        }
+
+        .notification-item .actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-left: auto;
+            padding-left: 10px;
+        }
+
+        .notification-item .mark-read {
+            border: 1px solid #dee2e6;
+            background: #fff;
+            color: #495057;
+            border-radius: 999px;
+            font-size: 12px;
+            padding: 4px 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .notification-item .mark-read:hover {
+            border-color: #007bff;
+            color: #007bff;
+        }
+
+        .notification-item.read {
+            opacity: 0.8;
+        }
+
+        .notification-item.unread .message {
+            font-weight: 600;
+        }
+
+        @media (max-width: 480px) {
+            .notifications-panel {
+                width: calc(100vw - 24px);
+                left: 12px !important;
+                right: auto !important;
+            }
         }
 
         .no-notifications {
@@ -860,6 +908,113 @@
         let isNotificationPlaying = false;
         const notificationSound = document.getElementById('notificationSound');
 
+        function getCsrfToken() {
+            const el = document.querySelector('meta[name="csrf-token"]');
+            return el ? el.getAttribute('content') : '';
+        }
+
+        function bindAtendidoSwitches() {
+            document.querySelectorAll('.switch-atendido').forEach((checkbox) => {
+                checkbox.addEventListener('change', async (e) => {
+                    const target = e.currentTarget;
+                    const id = target.dataset.id;
+                    if (!id) return;
+
+                    const previousChecked = !target.checked;
+                    target.disabled = true;
+
+                    try {
+                        const resp = await fetch(`{{ url('/formularios') }}/${id}/toggle-atendido`, {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': getCsrfToken(),
+                                'Accept': 'application/json',
+                            },
+                            credentials: 'same-origin',
+                        });
+
+                        if (!resp.ok) {
+                            throw new Error(`HTTP ${resp.status}`);
+                        }
+
+                        const data = await resp.json();
+                        if (!data || !data.success) {
+                            throw new Error('Respuesta inválida');
+                        }
+
+                        // Alinear UI con el estado real del backend
+                        target.checked = !!data.atendido;
+                        const card = target.closest('.formulario-card');
+                        const estadoTexto = card ? card.querySelector('.estado-texto') : null;
+                        if (estadoTexto) {
+                            estadoTexto.textContent = data.atendido ? 'Atendida' : 'Pendiente';
+                        }
+                    } catch (err) {
+                        // Revertir el switch si falló
+                        target.checked = previousChecked;
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'No se pudo actualizar',
+                            text: 'Verifica tu sesión o recarga la página e intenta de nuevo.',
+                        });
+                    } finally {
+                        target.disabled = false;
+                    }
+                });
+            });
+        }
+
+        function positionNotificationsPanel() {
+            const icon = document.getElementById('notificationsIcon');
+            const panel = document.getElementById('notificationsPanel');
+            if (!icon || !panel) return;
+
+            const rect = icon.getBoundingClientRect();
+            const margin = 10;
+            const exceptionalTop = 14;
+            const exceptionalRight = 14;
+
+            // Medimos el panel (asegurando que tenga tamaño)
+            const prevDisplay = panel.style.display;
+            if (prevDisplay !== 'block') {
+                panel.style.visibility = 'hidden';
+                panel.style.display = 'block';
+            }
+            const panelWidth = panel.offsetWidth || 350;
+            const panelHeight = panel.offsetHeight || 500;
+
+            const viewportW = window.innerWidth;
+            const viewportH = window.innerHeight;
+
+            const iconVisible = rect.bottom > 0 && rect.right > 0 && rect.top < viewportH && rect.left < viewportW;
+
+            // Por defecto: debajo del icono y alineado a la derecha del icono
+            let top = rect.bottom + margin;
+            let left = rect.right - panelWidth;
+
+            // Ajustes para no salirse del viewport
+            left = Math.max(margin, Math.min(left, viewportW - panelWidth - margin));
+            if (top + panelHeight > viewportH - margin) {
+                // Si no cabe abajo, lo ponemos arriba del icono
+                top = Math.max(margin, rect.top - panelHeight - margin);
+            }
+
+            // Modo "excepcional": si bajaste y la campana ya no se ve, fijamos el panel en una esquina
+            if (!iconVisible) {
+                top = exceptionalTop;
+                left = Math.max(margin, viewportW - panelWidth - exceptionalRight);
+            }
+
+            panel.style.top = `${top}px`;
+            panel.style.left = `${left}px`;
+            panel.style.right = 'auto';
+
+            if (prevDisplay !== 'block') {
+                panel.style.display = prevDisplay || 'none';
+                panel.style.visibility = '';
+            }
+        }
+
         function toggleNotifications() {
             const panel = document.getElementById('notificationsPanel');
             const overlay = document.getElementById('notificationsOverlay');
@@ -867,6 +1022,7 @@
             if (panel.style.display === 'block') {
                 closeNotifications();
             } else {
+                positionNotificationsPanel();
                 panel.style.display = 'block';
                 overlay.style.display = 'block';
                 stopNotificationSound();
@@ -903,13 +1059,13 @@
                     let hasNewNotifications = false;
 
                     if (notifications.length === 0) {
-                        container.innerHTML = '<div class="no-notifications">No hay notificaciones</div>';
+                        container.innerHTML = '<div class="no-notifications"><i class="fas fa-bell-slash"></i><p>No hay notificaciones</p></div>';
                         return;
                     }
 
                     notifications.forEach(notification => {
                         const notificationElement = document.createElement('div');
-                        notificationElement.className = 'notification-item' + (notification.read ? '' : ' unread');
+                        notificationElement.className = 'notification-item ' + (notification.read ? 'read' : 'unread');
                         notificationElement.dataset.notificationId = notification.id;
 
                         // Verificar si hay notificaciones nuevas
@@ -917,16 +1073,107 @@
                             hasNewNotifications = true;
                         }
 
-                        // Código completado para evitar que se rompa al final del script
+                        const createdAt = notification.created_at ? new Date(notification.created_at) : null;
+                        const timeText = createdAt && !isNaN(createdAt.getTime())
+                            ? createdAt.toLocaleString('es-VE', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })
+                            : '';
+
                         notificationElement.innerHTML = `
+                            <div class="notification-dot" style="${notification.read ? 'opacity:0' : ''}"></div>
                             <div class="content">
                                 <p class="message">${notification.message}</p>
+                                ${timeText ? `<div class="time">${timeText}</div>` : ''}
+                            </div>
+                            <div class="actions">
+                                ${notification.read ? '' : `<button class="mark-read" type="button" data-mark-read="${notification.id}">Marcar leída</button>`}
                             </div>
                         `;
                         container.appendChild(notificationElement);
                     });
+
+                    // Delegación: marcar como leída
+                    container.querySelectorAll('[data-mark-read]').forEach((btn) => {
+                        btn.addEventListener('click', async (e) => {
+                            e.stopPropagation();
+                            const id = e.currentTarget.getAttribute('data-mark-read');
+                            if (!id) return;
+                            try {
+                                const resp = await fetch(`{{ url('/notifications') }}/${id}/read`, {
+                                    method: 'POST',
+                                    headers: {
+                                        'X-CSRF-TOKEN': getCsrfToken(),
+                                        'Accept': 'application/json',
+                                    },
+                                    credentials: 'same-origin',
+                                });
+                                if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+                                await resp.json();
+                                fetchNotifications();
+                            } catch (err) {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'No se pudo actualizar',
+                                    text: 'Intenta nuevamente.',
+                                });
+                            }
+                        });
+                    });
                 });
         }
+
+        async function markAllAsRead() {
+            const container = document.getElementById('notificationsContainer');
+            if (!container) return;
+            const ids = Array.from(container.querySelectorAll('.notification-item.unread'))
+                .map(el => el.dataset.notificationId)
+                .filter(Boolean);
+
+            if (ids.length === 0) return;
+
+            try {
+                await Promise.all(ids.map(id => fetch(`{{ url('/notifications') }}/${id}/read`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': getCsrfToken(),
+                        'Accept': 'application/json',
+                    },
+                    credentials: 'same-origin',
+                })));
+                fetchNotifications();
+            } catch (err) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'No se pudo marcar todo',
+                    text: 'Intenta nuevamente.',
+                });
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const icon = document.getElementById('notificationsIcon');
+            if (icon) icon.addEventListener('click', toggleNotifications);
+            bindAtendidoSwitches();
+        });
+
+        window.addEventListener('resize', () => {
+            const panel = document.getElementById('notificationsPanel');
+            if (panel && panel.style.display === 'block') {
+                positionNotificationsPanel();
+            }
+        });
+
+        window.addEventListener('scroll', () => {
+            const panel = document.getElementById('notificationsPanel');
+            if (panel && panel.style.display === 'block') {
+                positionNotificationsPanel();
+            }
+        }, { passive: true });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeNotifications();
+        });
+
+        document.getElementById('notificationsOverlay')?.addEventListener('click', closeNotifications);
     </script>
 </body>
 </html>
