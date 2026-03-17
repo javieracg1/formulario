@@ -10,7 +10,6 @@
         <li><strong>Hora de inicio:</strong> {{ $formulario->hora_desde }}</li>
         <li><strong>Hora de fin:</strong> {{ $formulario->hora_hasta }}</li>
         <li><strong>Objetivo del evento:</strong> {{ $formulario->objetivo_evento }}</li>
-        <li><strong>Responsable:</strong> {{ $formulario->nombre_responsable }}</li>
         <li><strong>Notas adicionales:</strong> {{ $formulario->notas_adicionales ?? 'Sin notas' }}</li>
     </ul>
 </div>
